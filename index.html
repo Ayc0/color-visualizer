@@ -15,27 +15,32 @@
     </style>
   </head>
   <body>
-    <color-picker></color-picker>
-    <div>
-      <label for="hue">Hue</label>
-      <input
-        type="range"
-        id="hue"
-        name="hue"
-        min="0"
-        value="0"
-        max="360"
-        step="1"
-        oninput="document.getElementById('lch-paint').hue = Number(event.target.value); document.getElementById('hue-value').innerText = event.target.value"
-      />
-      <span id="hue-value">0</span>º
-    </div>
+    <color-picker
+      id="color-picker"
+      luminance="57"
+      chroma="110"
+      hue="283.8"
+    ></color-picker>
 
     <div style="margin-top: 2em; display: grid; place-items: center">
-      <lch-paint
-        id="lch-paint"
-        onchange="console.log(event.detail)"
-      ></lch-paint>
+      <lch-paint hue="283.8" id="lch-paint"></lch-paint>
     </div>
+
+    <script>
+      const colorPicker = document.getElementById("color-picker");
+      const lchPaint = document.getElementById("lch-paint");
+
+      colorPicker.addEventListener("change", (event) => {
+        const color = event.detail;
+        lchPaint.hue = color.hue;
+      });
+
+      lchPaint.addEventListener("change", (event) => {
+        const color = event.detail;
+        colorPicker.hue = color.hue;
+        colorPicker.luminance = color.luminance;
+        colorPicker.chroma = color.chroma;
+      });
+    </script>
   </body>
 </html>

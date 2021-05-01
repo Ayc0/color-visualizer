@@ -141,6 +141,24 @@ export class ColorPicker extends LitElement {
     `;
   }
 
+  updated() {
+    this.setFromLCH();
+
+    const color = {
+      chroma: this.chroma,
+      luminance: this.luminance,
+      hue: this.hue,
+    };
+
+    const newEvent = new CustomEvent("change", {
+      detail: color,
+      bubbles: true,
+      composed: true,
+    });
+
+    this.dispatchEvent(newEvent);
+  }
+
   render() {
     const hexRGB = `#${toHex(this.red)}${toHex(this.green)}${toHex(this.blue)}`;
     return html`
@@ -181,7 +199,7 @@ export class ColorPicker extends LitElement {
             min: 0,
             max: 255,
           })}
-          ${this.renderInput("b", "blue", this.setFromRGB, {
+          ${this.renderInput("B", "blue", this.setFromRGB, {
             min: 0,
             max: 255,
           })}

@@ -42,6 +42,22 @@ export class LCHPaint extends LitElement {
     this.dispatchEvent(newEvent);
   }
 
+  updated() {
+    const canvas = this.canvas;
+    if (!canvas) {
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return;
+    }
+
+    generateColors(this.hue, this.width, this.height).then((colorArray) => {
+      const imageData = new ImageData(colorArray, this.width, this.height);
+      ctx.putImageData(imageData, 0, 0);
+    });
+  }
+
   render() {
     return html`
       <canvas
@@ -59,22 +75,6 @@ export class LCHPaint extends LitElement {
       max-width: calc(100vw - 4em);
     }
   `;
-
-  updated() {
-    const canvas = this.canvas;
-    if (!canvas) {
-      return;
-    }
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      return;
-    }
-
-    generateColors(this.hue, this.width, this.height).then((colorArray) => {
-      const imageData = new ImageData(colorArray, this.width, this.height);
-      ctx.putImageData(imageData, 0, 0);
-    });
-  }
 }
 
 declare global {
