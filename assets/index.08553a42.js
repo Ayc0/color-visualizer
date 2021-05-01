@@ -65,28 +65,29 @@ var $t,St,Ct;xt.styles=K`
       border: 1px solid grey;
       max-width: calc(100vw - 4em);
     }
-  `,wt([pt({type:Number,reflect:!0})],xt.prototype,"hue",2),wt([pt({type:Number})],xt.prototype,"width",2),wt([pt({type:Number})],xt.prototype,"height",2),wt([($t="canvas",vt({descriptor:t=>{const e={get(){var t;return null===(t=this.renderRoot)||void 0===t?void 0:t.querySelector($t)},enumerable:!0,configurable:!0};if(St){const i="symbol"==typeof t?Symbol():"__"+t;e.get=function(){var t;return void 0===this[i]&&(this[i]=null===(t=this.renderRoot)||void 0===t?void 0:t.querySelector($t)),this[i]}}return e}}))],xt.prototype,"canvas",2),wt([(Ct={passive:!0},vt({finisher:(t,e)=>{Object.assign(t.prototype[e],Ct)}}))],xt.prototype,"onClick",1),xt=wt([dt("lch-paint")],xt);var Pt=Object.defineProperty,kt=Object.getOwnPropertyDescriptor,Ht=(t,e,i,s)=>{for(var r,n=s>1?void 0:s?kt(e,i):e,o=t.length-1;o>=0;o--)(r=t[o])&&(n=(s?r(e,i,n):r(n))||n);return s&&n&&Pt(e,i,n),n};function Et(t){return t.toString(16).padStart(2,"0")}let Lt=class extends ct{constructor(){super(...arguments),this.chroma=0,this.luminance=0,this.hue=0,this.a=0,this.b=0,this.red=0,this.green=0,this.blue=0,this.setLCH=t=>{const e=o(t);this.luminance=e.l,this.chroma=e.c,this.hue=e.h},this.setLab=t=>{const e=h(t);this.luminance=e.l,this.a=e.a,this.b=e.b},this.setRGB=t=>{const e=l(t);this.red=Math.min(255,Math.max(0,Math.floor(e.r))),this.blue=Math.min(255,Math.max(0,Math.floor(e.b))),this.green=Math.min(255,Math.max(0,Math.floor(e.g)))},this.setFromLCH=({chroma:t=this.chroma,luminance:e=this.luminance,hue:i=this.hue}={})=>{const s=o(e,t,i);this.setLab(s),this.setRGB(s),this.setLCH(s)},this.setFromLab=({luminance:t=this.luminance,a:e=this.a,b:i=this.b}={})=>{const s=h(t,e,i);this.setLCH(s),this.setRGB(s),this.setLab(s)},this.setFromRGB=({red:t=this.red,green:e=this.green,blue:i=this.blue}={})=>{const s=l(t,e,i);this.setLCH(s),this.setLab(s),this.setRGB(s)}}connectedCallback(){super.connectedCallback(),this.setFromLCH()}renderInput(t,e,i,{min:s,max:r}){return L`
+  `,wt([pt({type:Number,reflect:!0})],xt.prototype,"hue",2),wt([pt({type:Number})],xt.prototype,"width",2),wt([pt({type:Number})],xt.prototype,"height",2),wt([($t="canvas",vt({descriptor:t=>{const e={get(){var t;return null===(t=this.renderRoot)||void 0===t?void 0:t.querySelector($t)},enumerable:!0,configurable:!0};if(St){const i="symbol"==typeof t?Symbol():"__"+t;e.get=function(){var t;return void 0===this[i]&&(this[i]=null===(t=this.renderRoot)||void 0===t?void 0:t.querySelector($t)),this[i]}}return e}}))],xt.prototype,"canvas",2),wt([(Ct={passive:!0},vt({finisher:(t,e)=>{Object.assign(t.prototype[e],Ct)}}))],xt.prototype,"onClick",1),xt=wt([dt("lch-paint")],xt);var Pt=Object.defineProperty,kt=Object.getOwnPropertyDescriptor,Ht=(t,e,i,s)=>{for(var r,n=s>1?void 0:s?kt(e,i):e,o=t.length-1;o>=0;o--)(r=t[o])&&(n=(s?r(e,i,n):r(n))||n);return s&&n&&Pt(e,i,n),n};function Et(t){return t.toString(16).padStart(2,"0")}let Lt=class extends ct{constructor(){super(...arguments),this.chroma=0,this.luminance=0,this.hue=0,this.a=0,this.b=0,this.red=0,this.green=0,this.blue=0,this.setLCH=t=>{const e=o(t);this.luminance=e.l,this.chroma=e.c,this.hue=e.h},this.setLab=t=>{const e=h(t);this.luminance=e.l,this.a=e.a,this.b=e.b},this.setRGB=t=>{const e=l(t);this.red=Math.min(255,Math.max(0,Math.floor(e.r))),this.blue=Math.min(255,Math.max(0,Math.floor(e.b))),this.green=Math.min(255,Math.max(0,Math.floor(e.g)))},this.setFromLCH=({chroma:t=this.chroma,luminance:e=this.luminance,hue:i=this.hue}={})=>{const s=o(e,t,i);this.setLab(s),this.setRGB(s),this.setLCH(s)},this.setFromLab=({luminance:t=this.luminance,a:e=this.a,b:i=this.b}={})=>{const s=h(t,e,i);this.setLCH(s),this.setRGB(s),this.setLab(s)},this.setFromRGB=({red:t=this.red,green:e=this.green,blue:i=this.blue}={})=>{const s=l(t,e,i);this.setLCH(s),this.setLab(s),this.setRGB(s)}}connectedCallback(){super.connectedCallback(),this.setFromLCH()}renderInput(t,e,i,{min:s,max:r,unit:n=""}){return L`
       <label for="lab-${t}">${t} (${e}) </label>
+      <span>${Math.floor(this[e])}${n}</span>
       <input
         id="lab-${t}"
-        type="number"
+        type="range"
         min=${s}
         max=${r}
         value=${this[e]}
-        @input=${t=>{const n=Math.min(r,Math.max(s,Number(t.target.value)));t.target.value=Number.isNaN(n)?"":n||0,i({[e]:n||0})}}
+        @input=${t=>{const n=(o=Number(t.target.value),Math.min(r,Math.max(s,o)));var o;t.target.value=Number.isNaN(n)?"":n||0,i({[e]:n||0})}}
       />
     `}updated(){this.setFromLCH();const t={chroma:this.chroma,luminance:this.luminance,hue:this.hue},e=new CustomEvent("change",{detail:t,bubbles:!0,composed:!0});this.dispatchEvent(e)}render(){const t=`#${Et(this.red)}${Et(this.green)}${Et(this.blue)}`;return L`
       <div class="wrapper">
         <div class="group">
           <h2>LCH</h2>
-          ${this.renderInput("L","luminance",this.setFromLCH,{min:0,max:100})}
+          ${this.renderInput("L","luminance",this.setFromLCH,{min:0,max:100,unit:"º"})}
           ${this.renderInput("C","chroma",this.setFromLCH,{min:0,max:132})}
           ${this.renderInput("H","hue",this.setFromLCH,{min:0,max:360})}
         </div>
 
         <div class="group">
           <h2>Lab</h2>
-          ${this.renderInput("L","luminance",this.setFromLCH,{min:0,max:100})}
+          ${this.renderInput("L","luminance",this.setFromLCH,{min:0,max:100,unit:"º"})}
           ${this.renderInput("a","a",this.setFromLab,{min:-128,max:127})}
           ${this.renderInput("b","b",this.setFromLab,{min:-128,max:127})}
         </div>
@@ -127,7 +128,7 @@ ${t}</code></pre>
     :host .group {
       display: grid;
       /* 93px looks good */
-      grid-template-columns: 93px 1fr;
+      grid-template-columns: 100px 3ch 1fr;
       column-gap: 1em;
       row-gap: 0.5em;
     }
@@ -149,6 +150,6 @@ ${t}</code></pre>
     }
 
     :host h2 {
-      grid-column: span 2;
+      grid-column: span 3;
     }
   `,Ht([pt({type:Number,reflect:!0})],Lt.prototype,"chroma",2),Ht([pt({type:Number,reflect:!0})],Lt.prototype,"luminance",2),Ht([pt({type:Number,reflect:!0})],Lt.prototype,"hue",2),Ht([mt()],Lt.prototype,"a",2),Ht([mt()],Lt.prototype,"b",2),Ht([mt()],Lt.prototype,"red",2),Ht([mt()],Lt.prototype,"green",2),Ht([mt()],Lt.prototype,"blue",2),Lt=Ht([dt("color-picker")],Lt);
