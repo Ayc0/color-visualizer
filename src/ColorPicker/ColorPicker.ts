@@ -115,22 +115,22 @@ export class ColorPicker extends LitElement {
     name: string,
     key: Property,
     handler: (param: Record<Property, number>) => void,
-    { min, max }: { min: number; max: number }
+    { min, max, unit = "" }: { min: number; max: number; unit?: string }
   ) {
+    const clamp = (n: number) => Math.min(max, Math.max(min, n));
+
     return html`
       <label for="lab-${name}">${name} (${key}) </label>
+      <span>${Math.floor(this[key])}${unit}</span>
       <input
         id="lab-${name}"
-        type="number"
+        type="range"
         min=${min}
         max=${max}
         value=${this[key]}
         @input=${(event: Event) => {
-          const value = Math.min(
-            max,
-            // @ts-ignore
-            Math.max(min, Number(event.target.value))
-          );
+          // @ts-ignore
+          const value = clamp(Number(event.target.value));
           // @ts-ignore
           event.target.value = Number.isNaN(value) ? "" : value || 0;
           handler({
@@ -168,6 +168,7 @@ export class ColorPicker extends LitElement {
           ${this.renderInput("L", "luminance", this.setFromLCH, {
             min: 0,
             max: 100,
+            unit: "º",
           })}
           ${this.renderInput("C", "chroma", this.setFromLCH, {
             min: 0,
@@ -181,6 +182,7 @@ export class ColorPicker extends LitElement {
           ${this.renderInput("L", "luminance", this.setFromLCH, {
             min: 0,
             max: 100,
+            unit: "º",
           })}
           ${this.renderInput("a", "a", this.setFromLab, {
             min: -128,
@@ -237,7 +239,7 @@ ${hexRGB}</code></pre>
     :host .group {
       display: grid;
       /* 93px looks good */
-      grid-template-columns: 93px 1fr;
+      grid-template-columns: 100px 3ch 1fr;
       column-gap: 1em;
       row-gap: 0.5em;
     }
@@ -259,7 +261,7 @@ ${hexRGB}</code></pre>
     }
 
     :host h2 {
-      grid-column: span 2;
+      grid-column: span 3;
     }
   `;
 }
