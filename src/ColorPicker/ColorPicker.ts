@@ -142,6 +142,7 @@ export class ColorPicker extends LitElement {
   }
 
   render() {
+    const hexRGB = `#${toHex(this.red)}${toHex(this.green)}${toHex(this.blue)}`;
     return html`
       <div class="wrapper">
         <div class="group">
@@ -185,6 +186,8 @@ export class ColorPicker extends LitElement {
             max: 255,
           })}
         </div>
+
+        <div class="previsualization" style="background: ${hexRGB}"></div>
       </div>
 
       <hr />
@@ -192,7 +195,7 @@ export class ColorPicker extends LitElement {
       <pre><code>LCH(${this.luminance}% ${this.chroma} ${this.hue})
 Lab(${this.luminance}% ${this.a} ${this.b})
 rgb(${this.red} ${this.green} ${this.blue})
-#${toHex(this.red)}${toHex(this.green)}${toHex(this.blue)}</code></pre>
+${hexRGB}</code></pre>
     `;
   }
 
@@ -204,7 +207,7 @@ rgb(${this.red} ${this.green} ${this.blue})
     :host .wrapper {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      column-gap: 1em;
+      gap: 1em;
       margin-bottom: 1em;
     }
     @media (max-width: 595px) {
@@ -220,6 +223,23 @@ rgb(${this.red} ${this.green} ${this.blue})
       column-gap: 1em;
       row-gap: 0.5em;
     }
+
+    :host .previsualization {
+      box-sizing: border-box;
+      aspect-ratio: 5/3;
+      border-radius: 5px;
+      border: 1px solid grey;
+      width: calc(100% - 2em);
+      max-height: 150px;
+      place-self: center;
+    }
+    @media (min-width: 595px) {
+      :host .previsualization {
+        place-self: end;
+        margin-right: 1em;
+      }
+    }
+
     :host h2 {
       grid-column: span 2;
     }

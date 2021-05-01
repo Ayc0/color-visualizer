@@ -6,13 +6,6 @@ import { generateColors } from "./generate-colors";
 
 @customElement("lch-paint")
 export class LCHPaint extends LitElement {
-  static styles = css`
-    :host canvas {
-      border-radius: 5px;
-      border: 1px solid grey;
-    }
-  `;
-
   @property({ type: Number, reflect: true })
   hue = 0;
   @property({ type: Number })
@@ -58,6 +51,14 @@ export class LCHPaint extends LitElement {
       ></canvas>
     `;
   }
+
+  static styles = css`
+    :host canvas {
+      border-radius: 5px;
+      border: 1px solid grey;
+      max-width: calc(100vw - 4em);
+    }
+  `;
 
   updated() {
     const canvas = this.canvas;
