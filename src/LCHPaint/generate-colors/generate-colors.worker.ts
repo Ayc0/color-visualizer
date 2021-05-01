@@ -1,22 +1,22 @@
 import { generateColors } from "./generate-colors";
 
-function send(message: string) {
+function send(message: Uint8ClampedArray) {
   // @ts-ignore
   postMessage(message);
 }
 
-onmessage = function (
-  event: MessageEvent<[number, number, number, SharedArrayBuffer]>
-) {
-  const [hue, width, height, sab] = event.data;
-  const sharedArray = new Uint8ClampedArray(sab);
+onmessage = function (event: MessageEvent<[number, number, number]>) {
+  const [hue, width, height] = event.data;
+
+  const colorArray = new Uint8ClampedArray(width * height * 4);
 
   for (const { coordinates, colors } of generateColors(hue, width, height)) {
-    const i = 4 * (coordinates.y * width + coordinates.x);
-    sharedArray[i + 0] = colors.r; // R value
-    sharedArray[i + 1] = colors.g; // G value
-    sharedArray[i + 2] = colors.b; // B value
-    sharedArray[i + 3] = 255; // A value
+    const position = 4 * (coordinates.y * width + coordinates.x);
+    colorArray[position + 0] = colors.r; // R value
+    colorArray[position + 1] = colors.g; // G value
+    colorArray[position + 2] = colors.b; // B value
+    colorArray[position + 3] = 255; // A value
   }
-  send("done");
+
+  send(colorArray);
 };

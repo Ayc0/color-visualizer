@@ -13,11 +13,10 @@ export function generateColors(
   }
   prevWorker = worker;
 
-  const sab = new SharedArrayBuffer(width * height * 4);
   return new Promise((res) => {
-    worker.onmessage = (_event: MessageEvent<string>) => {
-      res(new Uint8ClampedArray(sab).slice());
+    worker.onmessage = (event: MessageEvent<Uint8ClampedArray>) => {
+      res(event.data.slice());
     };
-    worker.postMessage([hue, width, height, sab]);
+    worker.postMessage([hue, width, height]);
   });
 }
