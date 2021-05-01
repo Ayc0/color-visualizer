@@ -144,29 +144,47 @@ export class ColorPicker extends LitElement {
   render() {
     return html`
       <div class="wrapper">
-        <h2>LCH</h2>
-        ${this.renderInput("L", "luminance", this.setFromLCH, {
-          min: 0,
-          max: 100,
-        })}
-        ${this.renderInput("C", "chroma", this.setFromLCH, {
-          min: 0,
-          max: 132,
-        })}
-        ${this.renderInput("H", "hue", this.setFromLCH, { min: 0, max: 360 })}
+        <div class="group">
+          <h2>LCH</h2>
+          ${this.renderInput("L", "luminance", this.setFromLCH, {
+            min: 0,
+            max: 100,
+          })}
+          ${this.renderInput("C", "chroma", this.setFromLCH, {
+            min: 0,
+            max: 132,
+          })}
+          ${this.renderInput("H", "hue", this.setFromLCH, { min: 0, max: 360 })}
+        </div>
 
-        <h2>Lab</h2>
-        ${this.renderInput("L", "luminance", this.setFromLCH, {
-          min: 0,
-          max: 100,
-        })}
-        ${this.renderInput("a", "a", this.setFromLab, { min: -128, max: 127 })}
-        ${this.renderInput("b", "b", this.setFromLab, { min: -128, max: 127 })}
+        <div class="group">
+          <h2>Lab</h2>
+          ${this.renderInput("L", "luminance", this.setFromLCH, {
+            min: 0,
+            max: 100,
+          })}
+          ${this.renderInput("a", "a", this.setFromLab, {
+            min: -128,
+            max: 127,
+          })}
+          ${this.renderInput("b", "b", this.setFromLab, {
+            min: -128,
+            max: 127,
+          })}
+        </div>
 
-        <h2>RGB</h2>
-        ${this.renderInput("R", "red", this.setFromRGB, { min: 0, max: 255 })}
-        ${this.renderInput("G", "green", this.setFromRGB, { min: 0, max: 255 })}
-        ${this.renderInput("b", "blue", this.setFromRGB, { min: 0, max: 255 })}
+        <div class="group">
+          <h2>RGB</h2>
+          ${this.renderInput("R", "red", this.setFromRGB, { min: 0, max: 255 })}
+          ${this.renderInput("G", "green", this.setFromRGB, {
+            min: 0,
+            max: 255,
+          })}
+          ${this.renderInput("b", "blue", this.setFromRGB, {
+            min: 0,
+            max: 255,
+          })}
+        </div>
       </div>
 
       <hr />
@@ -182,12 +200,25 @@ rgb(${this.red} ${this.green} ${this.blue})
     :host label {
       display: block;
     }
+
     :host .wrapper {
       display: grid;
-      grid-template-columns: auto 1fr;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 1em;
+      margin-bottom: 1em;
+    }
+    @media (max-width: 595px) {
+      :host .wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    :host .group {
+      display: grid;
+      /* 93px looks good */
+      grid-template-columns: 93px 1fr;
       column-gap: 1em;
       row-gap: 0.5em;
-      margin-bottom: 1em;
     }
     :host h2 {
       grid-column: span 2;
