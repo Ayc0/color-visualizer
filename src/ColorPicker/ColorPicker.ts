@@ -1,7 +1,11 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { lch, lab, rgb } from "d3-color";
+import { lch, lab, rgb, ColorSpaceObject } from "d3-color";
+
+function toHex(color: number) {
+  return color.toString(16).padStart(2, "0");
+}
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
@@ -28,10 +32,31 @@ export class ColorPicker extends LitElement {
     super.connectedCallback();
 
     // modifyLCH will set all other values, and it will use the current values for LCH if not set
-    this.modifyLCH();
+    this.setFromLCH();
   }
 
-  modifyLCH = ({
+  setLCH = (color: ColorSpaceObject) => {
+    const lchColor = lch(color);
+    this.luminance = lchColor.l;
+    this.chroma = lchColor.c;
+    this.hue = lchColor.h;
+  };
+
+  setLab = (color: ColorSpaceObject) => {
+    const labColor = lab(color);
+    this.luminance = labColor.l;
+    this.a = labColor.a;
+    this.b = labColor.b;
+  };
+
+  setRGB = (color: ColorSpaceObject) => {
+    const rgbColor = rgb(color);
+    this.red = Math.min(255, Math.max(0, Math.floor(rgbColor.r)));
+    this.blue = Math.min(255, Math.max(0, Math.floor(rgbColor.b)));
+    this.green = Math.min(255, Math.max(0, Math.floor(rgbColor.g)));
+  };
+
+  setFromLCH = ({
     chroma = this.chroma,
     luminance = this.luminance,
     hue = this.hue,
@@ -40,22 +65,13 @@ export class ColorPicker extends LitElement {
     luminance?: number;
     hue?: number;
   } = {}) => {
-    const lchColor = lch(luminance, chroma, hue);
-    this.luminance = luminance;
-    this.chroma = chroma;
-    this.hue = hue;
-
-    const labColor = lab(lchColor);
-    this.a = labColor.a;
-    this.b = labColor.b;
-
-    const rgbColor = rgb(lchColor);
-    this.red = rgbColor.r;
-    this.blue = rgbColor.b;
-    this.green = rgbColor.g;
+    const color = lch(luminance, chroma, hue);
+    this.setLab(color);
+    this.setRGB(color);
+    this.setLCH(color);
   };
 
-  modifyLab = ({
+  setFromLab = ({
     luminance = this.luminance,
     a = this.a,
     b = this.b,
@@ -64,22 +80,13 @@ export class ColorPicker extends LitElement {
     a?: number;
     b?: number;
   } = {}) => {
-    const labColor = lab(luminance, a, b);
-    this.luminance = luminance;
-    this.a = a;
-    this.b = b;
-
-    const lchColor = lch(labColor);
-    this.chroma = lchColor.c;
-    this.hue = lchColor.h;
-
-    const rgbColor = rgb(labColor);
-    this.red = rgbColor.r;
-    this.blue = rgbColor.b;
-    this.green = rgbColor.g;
+    const color = lab(luminance, a, b);
+    this.setLCH(color);
+    this.setRGB(color);
+    this.setLab(color);
   };
 
-  modifyRGB = ({
+  setFromRGB = ({
     red = this.red,
     green = this.green,
     blue = this.blue,
@@ -88,19 +95,10 @@ export class ColorPicker extends LitElement {
     green?: number;
     blue?: number;
   } = {}) => {
-    const rgbColor = rgb(red, green, blue);
-    this.red = red;
-    this.blue = green;
-    this.green = blue;
-
-    const lchColor = lch(rgbColor);
-    this.luminance = lchColor.l;
-    this.chroma = lchColor.c;
-    this.hue = lchColor.h;
-
-    const labColor = lab(rgbColor);
-    this.a = labColor.a;
-    this.b = labColor.b;
+    const color = rgb(red, green, blue);
+    this.setLCH(color);
+    this.setLab(color);
+    this.setRGB(color);
   };
 
   renderInput<
@@ -147,32 +145,36 @@ export class ColorPicker extends LitElement {
     return html`
       <div class="wrapper">
         <h2>LCH</h2>
-        ${this.renderInput("L", "luminance", this.modifyLCH, {
+        ${this.renderInput("L", "luminance", this.setFromLCH, {
           min: 0,
           max: 100,
         })}
-        ${this.renderInput("C", "chroma", this.modifyLCH, { min: 0, max: 132 })}
-        ${this.renderInput("H", "hue", this.modifyLCH, { min: 0, max: 360 })}
+        ${this.renderInput("C", "chroma", this.setFromLCH, {
+          min: 0,
+          max: 132,
+        })}
+        ${this.renderInput("H", "hue", this.setFromLCH, { min: 0, max: 360 })}
 
         <h2>Lab</h2>
-        ${this.renderInput("L", "luminance", this.modifyLCH, {
+        ${this.renderInput("L", "luminance", this.setFromLCH, {
           min: 0,
           max: 100,
         })}
-        ${this.renderInput("a", "a", this.modifyLab, { min: -128, max: 127 })}
-        ${this.renderInput("b", "b", this.modifyLab, { min: -128, max: 127 })}
+        ${this.renderInput("a", "a", this.setFromLab, { min: -128, max: 127 })}
+        ${this.renderInput("b", "b", this.setFromLab, { min: -128, max: 127 })}
 
         <h2>RGB</h2>
-        ${this.renderInput("R", "red", this.modifyRGB, { min: 0, max: 255 })}
-        ${this.renderInput("G", "green", this.modifyRGB, { min: 0, max: 255 })}
-        ${this.renderInput("b", "blue", this.modifyRGB, { min: 0, max: 255 })}
+        ${this.renderInput("R", "red", this.setFromRGB, { min: 0, max: 255 })}
+        ${this.renderInput("G", "green", this.setFromRGB, { min: 0, max: 255 })}
+        ${this.renderInput("b", "blue", this.setFromRGB, { min: 0, max: 255 })}
       </div>
 
       <hr />
 
       <pre><code>LCH(${this.luminance}% ${this.chroma} ${this.hue})
 Lab(${this.luminance}% ${this.a} ${this.b})
-rgb(${this.red} ${this.green} ${this.blue})</code></pre>
+rgb(${this.red} ${this.green} ${this.blue})
+#${toHex(this.red)}${toHex(this.green)}${toHex(this.blue)}</code></pre>
     `;
   }
 
