@@ -285,6 +285,11 @@ export class ColorPicker extends LitElement {
     :host h2 {
       grid-column: span 3;
     }
+
+    :host input[type="range"] {
+      /* Avoid making the page scroll on mobile when we are pressing on it */
+      touch-action: none;
+    }
   `;
 }
 
