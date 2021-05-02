@@ -3,6 +3,9 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import { lch, lab, rgb, ColorSpaceObject } from "d3-color";
 
+import type { ColorSlider } from "./ColorSlider";
+import "./ColorSlider";
+
 function toHex(color: number) {
   return color.toString(16).padStart(2, "0");
 }
@@ -158,19 +161,17 @@ export class ColorPicker extends LitElement {
     return html`
       <label for="lab-${name}">${name} (${key}) </label>
       <span>${toFixed(this[key], 0)}${unit}</span>
-      <input
+      <color-slider
         .id="lab-${id}"
-        type="range"
         .min=${min}
         .max=${max}
         .value=${this[key]}
         @input=${(event: Event) => {
-          // @ts-ignore
-          const value = clamp(Number(event.target.value));
-          // @ts-ignore
-          event.target.value = Number.isNaN(value) ? "" : value || 0;
+          const element = event.target as ColorSlider;
+          const value = clamp(element.value || 0);
+          element.value = value;
           handler({
-            [key]: value || 0,
+            [key]: value,
           } as Record<Property, number>);
         }}
       />
