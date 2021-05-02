@@ -56,6 +56,22 @@ export class ColorPicker extends LitElement {
     this.green = Math.min(255, Math.max(0, Math.floor(rgbColor.g)));
   };
 
+  notifyParent = () => {
+    const color = {
+      chroma: this.chroma,
+      luminance: this.luminance,
+      hue: this.hue,
+    };
+
+    const newEvent = new CustomEvent("change", {
+      detail: color,
+      bubbles: true,
+      composed: true,
+    });
+
+    this.dispatchEvent(newEvent);
+  };
+
   setFromLCH = ({
     chroma = this.chroma,
     luminance = this.luminance,
@@ -69,6 +85,8 @@ export class ColorPicker extends LitElement {
     this.setLab(color);
     this.setRGB(color);
     this.setLCH(color);
+
+    this.notifyParent();
   };
 
   setFromLab = ({
@@ -84,6 +102,8 @@ export class ColorPicker extends LitElement {
     this.setLCH(color);
     this.setRGB(color);
     this.setLab(color);
+
+    this.notifyParent();
   };
 
   setFromRGB = ({
@@ -99,6 +119,8 @@ export class ColorPicker extends LitElement {
     this.setLCH(color);
     this.setLab(color);
     this.setRGB(color);
+
+    this.notifyParent();
   };
 
   renderInput<
@@ -141,22 +163,16 @@ export class ColorPicker extends LitElement {
     `;
   }
 
-  updated() {
-    this.setFromLCH();
+  willUpdate(changed: Map<string, any>) {
+    const keys = new Set(changed.keys());
+    keys.delete("luminance");
+    keys.delete("chroma");
+    keys.delete("hue");
 
-    const color = {
-      chroma: this.chroma,
-      luminance: this.luminance,
-      hue: this.hue,
-    };
-
-    const newEvent = new CustomEvent("change", {
-      detail: color,
-      bubbles: true,
-      composed: true,
-    });
-
-    this.dispatchEvent(newEvent);
+    // Only update if the update was related to LCH, otherwise no
+    if (keys.size === 0) {
+      this.setFromLCH();
+    }
   }
 
   render() {
@@ -212,10 +228,10 @@ export class ColorPicker extends LitElement {
 
       <hr />
 
-      <pre><code>LCH(${this.luminance}% ${this.chroma} ${this.hue})
-Lab(${this.luminance}% ${this.a} ${this.b})
-rgb(${this.red} ${this.green} ${this.blue})
-${hexRGB}</code></pre>
+      <pre><code>LCH(${this.luminance}% ${this.chroma} ${this.hue})</code>
+<code>Lab(${this.luminance}% ${this.a} ${this.b})</code>
+<code>rgb(${this.red} ${this.green} ${this.blue})</code>
+<code>${hexRGB}</code></pre>
     `;
   }
 
