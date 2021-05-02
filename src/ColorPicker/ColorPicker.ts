@@ -7,6 +7,10 @@ function toHex(color: number) {
   return color.toString(16).padStart(2, "0");
 }
 
+function clamp(min: number, number: number, max: number) {
+  return Math.min(max, Math.max(min, Math.floor(number)));
+}
+
 function toFixed(number: number, decimal: number = 2) {
   const dec = 10 ** decimal;
   return Math.round(number * dec) / dec;
@@ -42,23 +46,23 @@ export class ColorPicker extends LitElement {
 
   setLCH = (color: ColorSpaceObject) => {
     const lchColor = lch(color);
-    this.luminance = lchColor.l;
-    this.chroma = lchColor.c;
-    this.hue = lchColor.h;
+    this.luminance = clamp(0, lchColor.l || 0, 100);
+    this.chroma = clamp(0, lchColor.c || 0, 132);
+    this.hue = clamp(0, lchColor.h || 0, 360);
   };
 
   setLab = (color: ColorSpaceObject) => {
     const labColor = lab(color);
-    this.luminance = labColor.l;
-    this.a = labColor.a;
-    this.b = labColor.b;
+    this.luminance = clamp(0, labColor.l || 0, 100);
+    this.a = clamp(-128, labColor.a || 0, 127);
+    this.b = clamp(-128, labColor.b || 0, 127);
   };
 
   setRGB = (color: ColorSpaceObject) => {
     const rgbColor = rgb(color);
-    this.red = Math.min(255, Math.max(0, Math.floor(rgbColor.r)));
-    this.blue = Math.min(255, Math.max(0, Math.floor(rgbColor.b)));
-    this.green = Math.min(255, Math.max(0, Math.floor(rgbColor.g)));
+    this.red = clamp(0, Math.floor(rgbColor.r || 0), 255);
+    this.blue = clamp(0, Math.floor(rgbColor.b || 0), 255);
+    this.green = clamp(0, Math.floor(rgbColor.g || 0), 255);
   };
 
   notifyParent = () => {
