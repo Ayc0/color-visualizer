@@ -92,7 +92,19 @@ export class LCHPaint extends LitElement {
     return html`
       <div class="wrapper">
         <canvas
+          @pointerdown=${(event: PointerEvent) => {
+            // If we were pressing on the canvas and the mouse moved out of the canvas, it’ll keep the canvas focused
+            (event.currentTarget as HTMLCanvasElement).setPointerCapture(
+              event.pointerId
+            );
+          }}
           @pointermove="${this.onChange}"
+          @pointerup=${(event: PointerEvent) => {
+            // On pointer up, we can release the pointer
+            (event.currentTarget as HTMLCanvasElement).releasePointerCapture(
+              event.pointerId
+            );
+          }}
           width="${this.width}px"
           height="${this.height}px"
         ></canvas>
