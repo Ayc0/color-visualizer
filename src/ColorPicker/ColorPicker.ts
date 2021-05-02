@@ -269,6 +269,12 @@ export class ColorPicker extends LitElement {
       max-height: 150px;
       place-self: center;
     }
+    @supports not (aspect-ratio: 5/3) {
+      :host .previsualization {
+        height: 150px;
+      }
+    }
+
     @media (min-width: 595px) {
       :host .previsualization {
         place-self: end;
