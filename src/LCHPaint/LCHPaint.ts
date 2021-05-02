@@ -61,7 +61,7 @@ export class LCHPaint extends LitElement {
     const x = Math.floor((this.chroma / 132) * rect.width);
     const y = Math.floor((1 - this.luminance / 100) * rect.height);
 
-    marker.style.cssText = `top: ${y}px; left: ${x}px`;
+    marker.style.cssText = `transform: translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
   };
 
   updateCanvasColors = () => {
@@ -133,12 +133,11 @@ export class LCHPaint extends LitElement {
 
     :host .marker {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 0px;
+      left: 0px;
       pointer-events: none;
       width: 6px;
       height: 6px;
-      transform: translate(-50%, -50%);
       border-radius: 50%;
       border: 1px solid black;
       z-index: 1;
