@@ -20,6 +20,9 @@ export class LCHPaint extends LitElement {
   @query("canvas")
   canvas?: HTMLCanvasElement | null;
 
+  @query(".marker")
+  marker?: HTMLDivElement | null;
+
   @eventOptions({ passive: true })
   onChange(event: PointerEvent) {
     const canvas = this.canvas;
@@ -28,12 +31,12 @@ export class LCHPaint extends LitElement {
     }
     const rect = canvas.getBoundingClientRect();
 
-    const x = Math.min(Math.max(event.clientX - rect.x, 0), this.width);
-    const y = Math.min(Math.max(event.clientY - rect.y, 0), this.height);
+    const x = Math.min(Math.max(event.clientX - rect.x, 0), rect.width);
+    const y = Math.min(Math.max(event.clientY - rect.y, 0), rect.height);
 
     const color = {
-      chroma: Math.floor((x / this.width) * 132),
-      luminance: Math.floor((1 - y / this.height) * 100),
+      chroma: Math.floor((x / rect.width) * 132),
+      luminance: Math.floor((1 - y / rect.height) * 100),
       hue: this.hue,
     };
 
@@ -46,7 +49,20 @@ export class LCHPaint extends LitElement {
     this.dispatchEvent(newEvent);
   }
 
-  updated() {
+  updateMarkerPosition = () => {
+    const marker = this.marker;
+    const canvas = this.canvas;
+    if (!marker || !canvas) {
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((this.chroma / 132) * rect.width);
+    const y = Math.floor((1 - this.luminance / 100) * rect.height);
+
+    marker.style.cssText = `top: ${y}px; left: ${x}px`;
+  };
+
+  updateCanvasColors = () => {
     const canvas = this.canvas;
     if (!canvas) {
       return;
@@ -60,12 +76,19 @@ export class LCHPaint extends LitElement {
       const imageData = new ImageData(colorArray, this.width, this.height);
       ctx.putImageData(imageData, 0, 0);
     });
+  };
+
+  updated(changed: Map<string, any>) {
+    if (changed.has("chroma") || changed.has("luminance")) {
+      this.updateMarkerPosition();
+    }
+
+    if (changed.has("hue") || changed.has("width") || changed.has("height")) {
+      this.updateCanvasColors();
+    }
   }
 
   render() {
-    const x = Math.floor((this.chroma / 132) * this.width);
-    const y = Math.floor((1 - this.luminance / 100) * this.height);
-
     return html`
       <div class="wrapper">
         <canvas
@@ -73,7 +96,7 @@ export class LCHPaint extends LitElement {
           width="${this.width}px"
           height="${this.height}px"
         ></canvas>
-        <div class="marker" style="top: ${y}px; left: ${x}px"></div>
+        <div class="marker"></div>
       </div>
     `;
   }
