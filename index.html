@@ -13,7 +13,7 @@
         padding: 1em;
       }
     </style>
-  <script type="module" crossorigin src="/color-visualizer/assets/index.08553a42.js"></script>
+  <script type="module" crossorigin src="/color-visualizer/assets/index.15f7afdd.js"></script>
   <link rel="modulepreload" href="/color-visualizer/assets/lch-vendors.cd2c9a8e.js">
 </head>
   <body>
@@ -35,6 +35,8 @@
       colorPicker.addEventListener("change", (event) => {
         const color = event.detail;
         lchPaint.hue = color.hue;
+        lchPaint.luminance = color.luminance;
+        lchPaint.chroma = color.chroma;
       });
 
       lchPaint.addEventListener("change", (event) => {
