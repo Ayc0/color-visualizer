@@ -142,7 +142,12 @@ export class ColorPicker extends LitElement {
     name: string,
     key: Property,
     handler: (param: Record<Property, number>) => void,
-    { min, max, unit = "" }: { min: number; max: number; unit?: string }
+    {
+      min,
+      max,
+      unit = "",
+      id = name,
+    }: { min: number; max: number; unit?: string; id?: string }
   ) {
     const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
@@ -150,11 +155,11 @@ export class ColorPicker extends LitElement {
       <label for="lab-${name}">${name} (${key}) </label>
       <span>${toFixed(this[key], 0)}${unit}</span>
       <input
-        id="lab-${name}"
+        .id="lab-${id}"
         type="range"
-        min=${min}
-        max=${max}
-        value=${this[key]}
+        .min=${min}
+        .max=${max}
+        .value=${this[key]}
         @input=${(event: Event) => {
           // @ts-ignore
           const value = clamp(Number(event.target.value));
@@ -204,6 +209,7 @@ export class ColorPicker extends LitElement {
             min: 0,
             max: 100,
             unit: "º",
+            id: "L2",
           })}
           ${this.renderInput("a", "a", this.setFromLab, {
             min: -128,
