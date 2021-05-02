@@ -21,9 +21,9 @@ export class LCHPaint extends LitElement {
   canvas?: HTMLCanvasElement | null;
 
   @eventOptions({ passive: true })
-  onClick(event: MouseEvent) {
+  onChange(event: PointerEvent) {
     const canvas = this.canvas;
-    if (!canvas) {
+    if (!canvas || event.pressure === 0) {
       return;
     }
     const rect = canvas.getBoundingClientRect();
@@ -69,7 +69,7 @@ export class LCHPaint extends LitElement {
     return html`
       <div class="wrapper">
         <canvas
-          @click="${this.onClick}"
+          @pointermove="${this.onChange}"
           width="${this.width}px"
           height="${this.height}px"
         ></canvas>
@@ -83,6 +83,8 @@ export class LCHPaint extends LitElement {
       border-radius: 5px;
       border: 1px solid grey;
       max-width: calc(100vw - 4em);
+      /* Avoid making the page scroll on mobile when we are pressing on it */
+      touch-action: none;
     }
 
     :host .wrapper {
