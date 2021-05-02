@@ -7,6 +7,11 @@ function toHex(color: number) {
   return color.toString(16).padStart(2, "0");
 }
 
+function toFixed(number: number, decimal: number = 2) {
+  const dec = 10 ** decimal;
+  return Math.round(number * dec) / dec;
+}
+
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
   @property({ type: Number, reflect: true })
@@ -143,7 +148,7 @@ export class ColorPicker extends LitElement {
 
     return html`
       <label for="lab-${name}">${name} (${key}) </label>
-      <span>${Math.floor(this[key])}${unit}</span>
+      <span>${toFixed(this[key], 0)}${unit}</span>
       <input
         id="lab-${name}"
         type="range"
@@ -228,9 +233,15 @@ export class ColorPicker extends LitElement {
 
       <hr />
 
-      <pre><code>LCH(${this.luminance}% ${this.chroma} ${this.hue})</code>
-<code>Lab(${this.luminance}% ${this.a} ${this.b})</code>
-<code>rgb(${this.red} ${this.green} ${this.blue})</code>
+      <pre><code>LCH(${toFixed(this.luminance)}% ${toFixed(
+        this.chroma
+      )} ${toFixed(this.hue)})</code>
+<code>Lab(${toFixed(this.luminance)}% ${toFixed(this.a)} ${toFixed(
+        this.b
+      )})</code>
+<code>rgb(${toFixed(this.red)} ${toFixed(this.green)} ${toFixed(
+        this.blue
+      )})</code>
 <code>${hexRGB}</code></pre>
     `;
   }
