@@ -33,6 +33,8 @@
       colorPicker.addEventListener("change", (event) => {
         const color = event.detail;
         lchPaint.hue = color.hue;
+        lchPaint.luminance = color.luminance;
+        lchPaint.chroma = color.chroma;
       });
 
       lchPaint.addEventListener("change", (event) => {
