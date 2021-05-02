@@ -23,10 +23,12 @@ export class LCHPaint extends LitElement {
   @query(".marker")
   marker?: HTMLDivElement | null;
 
+  isPressed = false;
+
   @eventOptions({ passive: true })
-  onChange(event: PointerEvent) {
+  onPositionChange(event: PointerEvent) {
     const canvas = this.canvas;
-    if (!canvas || event.pressure === 0) {
+    if (!canvas || !this.isPressed) {
       return;
     }
     const rect = canvas.getBoundingClientRect();
@@ -97,13 +99,16 @@ export class LCHPaint extends LitElement {
             (event.currentTarget as HTMLCanvasElement).setPointerCapture(
               event.pointerId
             );
+            this.isPressed = true;
+            this.onPositionChange(event);
           }}
-          @pointermove="${this.onChange}"
+          @pointermove=${this.onPositionChange}
           @pointerup=${(event: PointerEvent) => {
             // On pointer up, we can release the pointer
             (event.currentTarget as HTMLCanvasElement).releasePointerCapture(
               event.pointerId
             );
+            this.isPressed = false;
           }}
           width="${this.width}px"
           height="${this.height}px"
