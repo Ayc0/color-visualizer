@@ -1,4 +1,7 @@
-import GenerateColorsWorker from "./generate-colors.worker?worker";
+const getGenerateColorsWorker = () =>
+  new Worker(new URL("./generate-colors.worker", import.meta.url), {
+    type: "module",
+  });
 
 let prevWorker: Worker | undefined;
 
@@ -7,7 +10,7 @@ export function generateColors(
   width: number,
   height: number
 ): Promise<Uint8ClampedArray> {
-  const worker = new GenerateColorsWorker();
+  const worker = getGenerateColorsWorker();
   if (prevWorker) {
     prevWorker.terminate();
   }
