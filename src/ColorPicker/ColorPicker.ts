@@ -28,10 +28,14 @@ export class ColorPicker extends LitElement {
   @property({ type: Number, reflect: true })
   hue = 0; // 0 – 360
 
+  lchColor = lch(this.luminance, this.chroma, this.hue);
+
   @state()
   a: number = 0; // -128 – 127
   @state()
   b: number = 0; // -128 – 127
+
+  labColor = lab(this.luminance, this.a, this.b);
 
   @state()
   red: number = 0; // 0 – 255
@@ -39,6 +43,8 @@ export class ColorPicker extends LitElement {
   green: number = 0; // 0 – 255
   @state()
   blue: number = 0; // 0 – 255
+
+  rgbColor = rgb(this.red, this.green, this.blue);
 
   connectedCallback() {
     super.connectedCallback();
@@ -48,24 +54,36 @@ export class ColorPicker extends LitElement {
   }
 
   setLCH = (color: ColorSpaceObject) => {
-    const lchColor = lch(color);
-    this.luminance = clamp(0, lchColor.l || 0, 100);
-    this.chroma = clamp(0, lchColor.c || 0, 132);
-    this.hue = clamp(0, lchColor.h || 0, 360);
+    this.lchColor = lch(color);
+    this.luminance = this.lchColor.l = clamp(0, this.lchColor.l || 0, 100);
+    this.chroma = this.lchColor.c = clamp(0, this.lchColor.c || 0, 132);
+    this.hue = this.lchColor.h = clamp(0, this.lchColor.h || 0, 360);
   };
 
   setLab = (color: ColorSpaceObject) => {
-    const labColor = lab(color);
-    this.luminance = clamp(0, labColor.l || 0, 100);
-    this.a = clamp(-128, labColor.a || 0, 127);
-    this.b = clamp(-128, labColor.b || 0, 127);
+    this.labColor = lab(color);
+    this.luminance = this.labColor.l = clamp(0, this.labColor.l || 0, 100);
+    this.a = this.labColor.a = clamp(-128, this.labColor.a || 0, 127);
+    this.b = this.labColor.b = clamp(-128, this.labColor.b || 0, 127);
   };
 
   setRGB = (color: ColorSpaceObject) => {
-    const rgbColor = rgb(color);
-    this.red = clamp(0, Math.floor(rgbColor.r || 0), 255);
-    this.blue = clamp(0, Math.floor(rgbColor.b || 0), 255);
-    this.green = clamp(0, Math.floor(rgbColor.g || 0), 255);
+    this.rgbColor = rgb(color);
+    this.red = this.rgbColor.r = clamp(
+      0,
+      Math.floor(this.rgbColor.r || 0),
+      255
+    );
+    this.blue = this.rgbColor.b = clamp(
+      0,
+      Math.floor(this.rgbColor.b || 0),
+      255
+    );
+    this.green = this.rgbColor.g = clamp(
+      0,
+      Math.floor(this.rgbColor.g || 0),
+      255
+    );
   };
 
   notifyParent = () => {
@@ -146,32 +164,43 @@ export class ColorPicker extends LitElement {
       | "green"
       | "blue"
   >(
-    name: string,
-    key: Property,
     handler: (param: Record<Property, number>) => void,
     {
+      state,
+      shortName = state[0].toUpperCase(),
+      id = state[0],
       min,
       max,
       unit = "",
-      id = name,
-    }: { min: number; max: number; unit?: string; id?: string }
+      referenceColor,
+    }: {
+      state: Property;
+      shortName?: string;
+      min: number;
+      max: number;
+      unit?: string;
+      id?: string;
+      referenceColor: ColorSpaceObject;
+    }
   ) {
     const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
     return html`
-      <label for="lab-${name}">${name} (${key}) </label>
-      <span>${toFixed(this[key], 0)}${unit}</span>
+      <label for="lab-${shortName}">${shortName} (${state}) </label>
+      <span>${toFixed(this[state], 0)}${unit}</span>
       <color-slider
         .id="lab-${id}"
         .min=${min}
         .max=${max}
-        .value=${this[key]}
+        .value=${this[state]}
+        .referenceColor=${referenceColor}
+        .valueToModify=${state[0]}
         @input=${(event: Event) => {
           const element = event.target as ColorSlider;
           const value = clamp(element.value || 0);
           element.value = value;
           handler({
-            [key]: value,
+            [state]: value,
           } as Record<Property, number>);
         }}
       />
@@ -196,46 +225,72 @@ export class ColorPicker extends LitElement {
       <div class="wrapper">
         <div class="group">
           <h2>LCH</h2>
-          ${this.renderInput("L", "luminance", this.setFromLCH, {
+          ${this.renderInput(this.setFromLCH, {
+            state: "luminance",
             min: 0,
             max: 100,
             unit: "º",
+            referenceColor: this.lchColor,
           })}
-          ${this.renderInput("C", "chroma", this.setFromLCH, {
+          ${this.renderInput(this.setFromLCH, {
+            state: "chroma",
             min: 0,
             max: 132,
+            referenceColor: this.lchColor,
           })}
-          ${this.renderInput("H", "hue", this.setFromLCH, { min: 0, max: 360 })}
+          ${this.renderInput(this.setFromLCH, {
+            state: "hue",
+            min: 0,
+            max: 360,
+            referenceColor: this.lchColor,
+          })}
         </div>
 
         <div class="group">
           <h2>Lab</h2>
-          ${this.renderInput("L", "luminance", this.setFromLCH, {
+          ${this.renderInput(this.setFromLCH, {
+            state: "luminance",
             min: 0,
             max: 100,
             unit: "º",
             id: "L2",
+            referenceColor: this.labColor,
           })}
-          ${this.renderInput("a", "a", this.setFromLab, {
+          ${this.renderInput(this.setFromLab, {
+            state: "a",
+            shortName: "a",
             min: -128,
             max: 127,
+            referenceColor: this.labColor,
           })}
-          ${this.renderInput("b", "b", this.setFromLab, {
+          ${this.renderInput(this.setFromLab, {
+            state: "b",
+            shortName: "b",
             min: -128,
             max: 127,
+            referenceColor: this.labColor,
           })}
         </div>
 
         <div class="group">
           <h2>RGB</h2>
-          ${this.renderInput("R", "red", this.setFromRGB, { min: 0, max: 255 })}
-          ${this.renderInput("G", "green", this.setFromRGB, {
+          ${this.renderInput(this.setFromRGB, {
+            state: "red",
             min: 0,
             max: 255,
+            referenceColor: this.rgbColor,
           })}
-          ${this.renderInput("B", "blue", this.setFromRGB, {
+          ${this.renderInput(this.setFromRGB, {
+            state: "green",
             min: 0,
             max: 255,
+            referenceColor: this.rgbColor,
+          })}
+          ${this.renderInput(this.setFromRGB, {
+            state: "blue",
+            min: 0,
+            max: 255,
+            referenceColor: this.rgbColor,
           })}
         </div>
 
