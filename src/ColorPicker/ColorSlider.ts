@@ -4,17 +4,16 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ColorSpaceObject, rgb } from "d3-color";
 
 const height = 20;
-const offset = 2;
+const offset = 1;
 const borderWidth = 1;
 const borderColor = css`grey`;
 
-const thumbBackground = css`#ffffffff`;
-const thumbWidth = 16;
+const thumbWidth = 14;
 const thumbStyles = css`
   width: ${thumbWidth}px;
   height: ${height + offset * 2}px;
-  background: ${thumbBackground};
-  box-shadow: 0 0 0 ${borderWidth}px ${borderColor};
+  background: #00000000;
+  box-shadow: 0 0 0 ${borderWidth}px black, inset 0 0 0 ${borderWidth}px white;
   border-radius: 3px;
   cursor: pointer;
 `;
