@@ -4219,6 +4219,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+manatea@^0.5.0-beta.2:
+  version "0.5.0-beta.2"
+  resolved "https://registry.yarnpkg.com/manatea/-/manatea-0.5.0-beta.2.tgz#9b56efb11e10a8f9694315f70607270b7ba06b2b"
+  integrity sha512-HKpD+QOTVB0ooj2FgqtdM9QQaU1C1BlpSldYoq0jmUB8Ousgr6m5shXTC4Oy1XwuI8Cg+z/1itrsIIOSVRC5Iw==
+
 map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"

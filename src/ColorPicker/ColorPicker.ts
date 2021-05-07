@@ -1,17 +1,29 @@
 import { LitElement, html, css } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
+import { Cup } from "manatea";
 
-import { lch, lab, rgb, ColorSpaceObject } from "d3-color";
+import { ColorSpaceObject } from "d3-color";
 
 import type { ColorSlider } from "./ColorSlider";
 import "./ColorSlider";
 
-function toHex(color: number) {
-  return color.toString(16).padStart(2, "0");
-}
+import {
+  aCup,
+  bCup,
+  blueCup,
+  chromaCup,
+  greenCup,
+  hueCup,
+  labCup,
+  lchCup,
+  luminanceCup,
+  redCup,
+  rgbCup,
+} from "../color-controllers";
+import { ManateaController } from "../manatea-controller";
 
-function clamp(min: number, number: number, max: number) {
-  return Math.min(max, Math.max(min, Math.floor(number)));
+function toHex(color: number) {
+  return Math.floor(color).toString(16).padStart(2, "0");
 }
 
 function toFixed(number: number, decimal: number = 2) {
@@ -21,137 +33,8 @@ function toFixed(number: number, decimal: number = 2) {
 
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
-  @property({ type: Number, reflect: true })
-  chroma = 0; // 0 – 132
-  @property({ type: Number, reflect: true })
-  luminance = 0; // 0 – 100
-  @property({ type: Number, reflect: true })
-  hue = 0; // 0 – 360
-
-  lchColor = lch(this.luminance, this.chroma, this.hue);
-
-  @state()
-  a: number = 0; // -128 – 127
-  @state()
-  b: number = 0; // -128 – 127
-
-  labColor = lab(this.luminance, this.a, this.b);
-
-  @state()
-  red: number = 0; // 0 – 255
-  @state()
-  green: number = 0; // 0 – 255
-  @state()
-  blue: number = 0; // 0 – 255
-
-  rgbColor = rgb(this.red, this.green, this.blue);
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    // modifyLCH will set all other values, and it will use the current values for LCH if not set
-    this.setFromLCH();
-  }
-
-  setLCH = (color: ColorSpaceObject) => {
-    this.lchColor = lch(color);
-    this.luminance = this.lchColor.l = clamp(0, this.lchColor.l || 0, 100);
-    this.chroma = this.lchColor.c = clamp(0, this.lchColor.c || 0, 132);
-    this.hue = this.lchColor.h = clamp(0, this.lchColor.h || 0, 360);
-  };
-
-  setLab = (color: ColorSpaceObject) => {
-    this.labColor = lab(color);
-    this.luminance = this.labColor.l = clamp(0, this.labColor.l || 0, 100);
-    this.a = this.labColor.a = clamp(-128, this.labColor.a || 0, 127);
-    this.b = this.labColor.b = clamp(-128, this.labColor.b || 0, 127);
-  };
-
-  setRGB = (color: ColorSpaceObject) => {
-    this.rgbColor = rgb(color);
-    this.red = this.rgbColor.r = clamp(
-      0,
-      Math.floor(this.rgbColor.r || 0),
-      255
-    );
-    this.blue = this.rgbColor.b = clamp(
-      0,
-      Math.floor(this.rgbColor.b || 0),
-      255
-    );
-    this.green = this.rgbColor.g = clamp(
-      0,
-      Math.floor(this.rgbColor.g || 0),
-      255
-    );
-  };
-
-  notifyParent = () => {
-    const color = {
-      chroma: this.chroma,
-      luminance: this.luminance,
-      hue: this.hue,
-    };
-
-    const newEvent = new CustomEvent("change", {
-      detail: color,
-      bubbles: true,
-      composed: true,
-    });
-
-    this.dispatchEvent(newEvent);
-  };
-
-  setFromLCH = ({
-    chroma = this.chroma,
-    luminance = this.luminance,
-    hue = this.hue,
-  }: {
-    chroma?: number;
-    luminance?: number;
-    hue?: number;
-  } = {}) => {
-    const color = lch(luminance, chroma, hue);
-    this.setLab(color);
-    this.setRGB(color);
-    this.setLCH(color);
-
-    this.notifyParent();
-  };
-
-  setFromLab = ({
-    luminance = this.luminance,
-    a = this.a,
-    b = this.b,
-  }: {
-    luminance?: number;
-    a?: number;
-    b?: number;
-  } = {}) => {
-    const color = lab(luminance, a, b);
-    this.setLCH(color);
-    this.setRGB(color);
-    this.setLab(color);
-
-    this.notifyParent();
-  };
-
-  setFromRGB = ({
-    red = this.red,
-    green = this.green,
-    blue = this.blue,
-  }: {
-    red?: number;
-    green?: number;
-    blue?: number;
-  } = {}) => {
-    const color = rgb(red, green, blue);
-    this.setLCH(color);
-    this.setLab(color);
-    this.setRGB(color);
-
-    this.notifyParent();
-  };
+  // To auto update when the color changes
+  lchController = new ManateaController(this, lchCup);
 
   renderInput<
     Property extends
@@ -164,11 +47,12 @@ export class ColorPicker extends LitElement {
       | "green"
       | "blue"
   >(
-    handler: (param: Record<Property, number>) => void,
+    handler: (newValue: number) => void,
     {
       state,
       shortName = state[0].toUpperCase(),
       id = state[0],
+      cup,
       min,
       max,
       unit = "",
@@ -176,6 +60,7 @@ export class ColorPicker extends LitElement {
     }: {
       state: Property;
       shortName?: string;
+      cup: Cup<number>;
       min: number;
       max: number;
       unit?: string;
@@ -186,22 +71,20 @@ export class ColorPicker extends LitElement {
     const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
     return html`
-      <label for="lab-${shortName}">${shortName} (${state}) </label>
-      <span>${toFixed(this[state], 0)}${unit}</span>
+      <label for="lab-${id}">${shortName} (${state}) </label>
+      <span>${toFixed(cup(), 0)}${unit}</span>
       <color-slider
         .id="lab-${id}"
         .min=${min}
         .max=${max}
-        .value=${this[state]}
+        .value=${cup()}
         .referenceColor=${referenceColor}
         .valueToModify=${state[0]}
         @input=${(event: Event) => {
           const element = event.target as ColorSlider;
           const value = clamp(element.value || 0);
           element.value = value;
-          handler({
-            [state]: value,
-          } as Record<Property, number>);
+          handler(value);
         }}
       />
     `;
@@ -215,82 +98,91 @@ export class ColorPicker extends LitElement {
 
     // Only update if the update was related to LCH, otherwise no
     if (keys.size === 0) {
-      this.setFromLCH();
+      lchCup();
     }
   }
 
   render() {
-    const hexRGB = `#${toHex(this.red)}${toHex(this.green)}${toHex(this.blue)}`;
+    const hexRGB = `#${toHex(redCup())}${toHex(greenCup())}${toHex(blueCup())}`;
     return html`
       <div class="wrapper">
         <div class="group">
           <h2>LCH</h2>
-          ${this.renderInput(this.setFromLCH, {
+          ${this.renderInput(luminanceCup, {
             state: "luminance",
+            cup: luminanceCup,
             min: 0,
             max: 100,
             unit: "º",
-            referenceColor: this.lchColor,
+            referenceColor: lchCup(),
           })}
-          ${this.renderInput(this.setFromLCH, {
+          ${this.renderInput(chromaCup, {
             state: "chroma",
+            cup: chromaCup,
             min: 0,
             max: 132,
-            referenceColor: this.lchColor,
+            referenceColor: lchCup(),
           })}
-          ${this.renderInput(this.setFromLCH, {
+          ${this.renderInput(hueCup, {
             state: "hue",
+            cup: hueCup,
             min: 0,
             max: 360,
-            referenceColor: this.lchColor,
+            referenceColor: lchCup(),
           })}
         </div>
 
         <div class="group">
           <h2>Lab</h2>
-          ${this.renderInput(this.setFromLCH, {
+          ${this.renderInput(luminanceCup, {
             state: "luminance",
+            cup: luminanceCup,
             min: 0,
             max: 100,
             unit: "º",
             id: "L2",
-            referenceColor: this.labColor,
+            referenceColor: labCup(),
           })}
-          ${this.renderInput(this.setFromLab, {
+          ${this.renderInput(aCup, {
             state: "a",
             shortName: "a",
+            cup: aCup,
             min: -128,
             max: 127,
-            referenceColor: this.labColor,
+            referenceColor: labCup(),
           })}
-          ${this.renderInput(this.setFromLab, {
+          ${this.renderInput(bCup, {
             state: "b",
             shortName: "b",
+            cup: bCup,
             min: -128,
             max: 127,
-            referenceColor: this.labColor,
+            referenceColor: labCup(),
           })}
         </div>
 
         <div class="group">
           <h2>RGB</h2>
-          ${this.renderInput(this.setFromRGB, {
+          ${this.renderInput(redCup, {
             state: "red",
+            cup: redCup,
             min: 0,
             max: 255,
-            referenceColor: this.rgbColor,
+            referenceColor: rgbCup(),
           })}
-          ${this.renderInput(this.setFromRGB, {
+          ${this.renderInput(greenCup, {
             state: "green",
+            cup: greenCup,
             min: 0,
             max: 255,
-            referenceColor: this.rgbColor,
+            referenceColor: rgbCup(),
           })}
-          ${this.renderInput(this.setFromRGB, {
+          ${this.renderInput(blueCup, {
             state: "blue",
+            cup: blueCup,
             min: 0,
             max: 255,
-            referenceColor: this.rgbColor,
+            referenceColor: rgbCup(),
           })}
         </div>
 
@@ -299,14 +191,14 @@ export class ColorPicker extends LitElement {
 
       <hr />
 
-      <pre><code>LCH(${toFixed(this.luminance)}% ${toFixed(
-        this.chroma
-      )} ${toFixed(this.hue)})</code>
-<code>Lab(${toFixed(this.luminance)}% ${toFixed(this.a)} ${toFixed(
-        this.b
+      <pre><code>LCH(${toFixed(luminanceCup())}% ${toFixed(
+        chromaCup()
+      )} ${toFixed(hueCup())})</code>
+<code>Lab(${toFixed(luminanceCup())}% ${toFixed(aCup())} ${toFixed(
+        bCup()
       )})</code>
-<code>rgb(${toFixed(this.red)} ${toFixed(this.green)} ${toFixed(
-        this.blue
+<code>rgb(${toFixed(redCup())} ${toFixed(greenCup())} ${toFixed(
+        blueCup()
       )})</code>
 <code>${hexRGB}</code></pre>
     `;

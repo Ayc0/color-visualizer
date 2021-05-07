@@ -1,17 +1,14 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, eventOptions } from "lit/decorators.js";
 import { query } from "lit/decorators/query.js";
+import { lch } from "d3-color";
 
-import { generateColors } from "./generate-colors";
+import { lchCup, hueCup } from "../color-controllers";
+
+import { createGenerateColors } from "./generate-colors";
 
 @customElement("lch-paint")
 export class LCHPaint extends LitElement {
-  @property({ type: Number, reflect: true })
-  hue = 0;
-  @property({ type: Number, reflect: true })
-  luminance = 0;
-  @property({ type: Number, reflect: true })
-  chroma = 0;
   @property({ type: Number })
   width = 500;
   @property({ type: Number })
@@ -25,6 +22,8 @@ export class LCHPaint extends LitElement {
 
   isPressed = false;
 
+  generateColors = createGenerateColors();
+
   @eventOptions({ passive: true })
   onPositionChange(event: PointerEvent) {
     const canvas = this.canvas;
@@ -36,19 +35,12 @@ export class LCHPaint extends LitElement {
     const x = Math.min(Math.max(event.clientX - rect.x, 0), rect.width);
     const y = Math.min(Math.max(event.clientY - rect.y, 0), rect.height);
 
-    const color = {
-      chroma: Math.floor((x / rect.width) * 132),
-      luminance: Math.floor((1 - y / rect.height) * 100),
-      hue: this.hue,
-    };
-
-    const newEvent = new CustomEvent("change", {
-      detail: color,
-      bubbles: true,
-      composed: true,
-    });
-
-    this.dispatchEvent(newEvent);
+    const newColor = lch(
+      Math.floor((1 - y / rect.height) * 100),
+      Math.floor((x / rect.width) * 132),
+      lchCup().h
+    );
+    lchCup(newColor);
   }
 
   updateMarkerPosition = () => {
@@ -58,8 +50,8 @@ export class LCHPaint extends LitElement {
       return;
     }
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((this.chroma / 132) * rect.width);
-    const y = Math.floor((1 - this.luminance / 100) * rect.height);
+    const x = Math.floor((lchCup().c / 132) * rect.width);
+    const y = Math.floor((1 - lchCup().l / 100) * rect.height);
 
     marker.style.cssText = `transform: translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
   };
@@ -74,18 +66,27 @@ export class LCHPaint extends LitElement {
       return;
     }
 
-    generateColors(this.hue, this.width, this.height).then((colorArray) => {
-      const imageData = new ImageData(colorArray, this.width, this.height);
-      ctx.putImageData(imageData, 0, 0);
-    });
+    this.generateColors(lchCup().h, this.width, this.height).then(
+      (colorArray) => {
+        const imageData = new ImageData(colorArray, this.width, this.height);
+        ctx.putImageData(imageData, 0, 0);
+      }
+    );
   };
 
-  updated(changed: Map<string, any>) {
-    if (changed.has("chroma") || changed.has("luminance")) {
-      this.updateMarkerPosition();
-    }
+  constructor() {
+    super();
+    hueCup.on(() => this.updateCanvasColors());
 
-    if (changed.has("hue") || changed.has("width") || changed.has("height")) {
+    lchCup.on(() => this.updateMarkerPosition());
+  }
+
+  firstUpdated() {
+    this.updateMarkerPosition();
+  }
+
+  updated(changed: Map<string, any>) {
+    if (changed.has("width") || changed.has("height")) {
       this.updateCanvasColors();
     }
   }
