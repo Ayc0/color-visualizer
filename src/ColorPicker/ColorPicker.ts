@@ -66,13 +66,7 @@ export class ColorPicker extends LitElement {
     const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
     return html`
-      <label for="lab-${id}">${shortName} (${label}) </label>
-      <span
-        >${toFixed(
-          mod(cup()),
-          Math.floor(-Math.log(step) / Math.log(10))
-        )}${unit}</span
-      >
+      <label for="lab-${id}">${shortName} (${label})</label>
       <color-slider
         .id="lab-${id}"
         .min=${min}
@@ -87,7 +81,13 @@ export class ColorPicker extends LitElement {
           element.value = value;
           cup(value);
         }}
-      />
+      ></color-slider>
+      <span
+        >${toFixed(
+          mod(cup()),
+          Math.floor(-Math.log(step) / Math.log(10))
+        )}${unit}</span
+      >
     `;
   }
 
@@ -131,6 +131,10 @@ export class ColorPicker extends LitElement {
             max: 360,
             referenceColor: lchCup(),
           })}
+
+          <pre class="code-wrapper"><code class="code">LCH(${toFixed(
+            luminanceCup()
+          )}% ${toFixed(chromaCup())} ${toFixed(hueCup())})</code></pre>
         </div>
 
         <div class="group">
@@ -160,6 +164,10 @@ export class ColorPicker extends LitElement {
             max: 127,
             referenceColor: labCup(),
           })}
+
+          <pre class="code-wrapper"><code class='code'>Lab(${toFixed(
+            luminanceCup()
+          )}% ${toFixed(aCup())} ${toFixed(bCup())})</code></pre>
         </div>
 
         <div class="group">
@@ -185,6 +193,11 @@ export class ColorPicker extends LitElement {
             max: 255,
             referenceColor: rgbCup(),
           })}
+
+          <pre class="code-wrapper"><code class='code'>rgb(${toFixed(
+            redCup()
+          )} ${toFixed(greenCup())} ${toFixed(blueCup())})</code>
+<code class='code'>${hexRGB}</code></pre>
         </div>
 
         <div class="group">
@@ -216,26 +229,13 @@ export class ColorPicker extends LitElement {
             unit: "%",
             referenceColor: hslCup(),
           })}
+          <pre class="code-wrapper"><code class='code'>hsl(${toFixed(
+            fakeHueCup()
+          )} ${toFixed(saturationCup()) * 100}% ${toFixed(
+            lightnessCup() * 100
+          )}%)</code></pre>
         </div>
-
-        <div class="previsualization" style="background: ${hexRGB}"></div>
       </div>
-
-      <hr />
-
-      <pre><code>LCH(${toFixed(luminanceCup())}% ${toFixed(
-        chromaCup()
-      )} ${toFixed(hueCup())})</code>
-<code>Lab(${toFixed(luminanceCup())}% ${toFixed(aCup())} ${toFixed(
-        bCup()
-      )})</code>
-<code>rgb(${toFixed(redCup())} ${toFixed(greenCup())} ${toFixed(
-        blueCup()
-      )})</code>
-<code>hsl(${toFixed(fakeHueCup())} ${toFixed(saturationCup()) * 100}% ${toFixed(
-        lightnessCup() * 100
-      )}%)</code>
-<code>${hexRGB}</code></pre>
     `;
   }
 
@@ -247,7 +247,8 @@ export class ColorPicker extends LitElement {
     :host .wrapper {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1em;
+      row-gap: 1em;
+      column-gap: 2em;
       margin-bottom: 1em;
     }
     @media (max-width: 595px) {
@@ -259,44 +260,29 @@ export class ColorPicker extends LitElement {
     :host .group {
       display: grid;
       /* 93px looks good */
-      grid-template-columns: 100px 3ch 1fr;
+      grid-template-columns: 1fr 5ch;
+      grid-template-rows: repeat(7, auto) 1fr;
       column-gap: 1em;
       row-gap: 0.5em;
     }
 
-    :host .previsualization {
-      box-sizing: border-box;
-      aspect-ratio: 5/3;
-      border-radius: 5px;
-      border: 1px solid grey;
-      width: calc(100% - 2em);
-      max-height: 150px;
-      place-self: center;
-    }
-    @supports not (aspect-ratio: 5/3) {
-      :host .previsualization {
-        height: 150px;
-      }
-    }
-
-    @media (min-width: 595px) {
-      :host .previsualization {
-        place-self: end;
-        margin-right: 1em;
-      }
-    }
-
     :host h2 {
-      grid-column: span 3;
+      grid-column: span 2;
     }
 
-    :host input[type="range"] {
+    :host label {
+      grid-column: span 2;
+    }
+
+    :host color-slider {
       /* Avoid making the page scroll on mobile when we are pressing on it */
       touch-action: none;
     }
 
-    :host pre,
-    :host code {
+    :host .code-wrapper {
+      grid-column: span 2;
+    }
+    :host .code {
       font-family: "Fira Code", monospace;
     }
   `;
