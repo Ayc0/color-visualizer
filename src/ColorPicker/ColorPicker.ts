@@ -12,13 +12,17 @@ import {
   bCup,
   blueCup,
   chromaCup,
+  fakeHueCup,
   greenCup,
+  hslCup,
   hueCup,
   labCup,
   lchCup,
+  lightnessCup,
   luminanceCup,
   redCup,
   rgbCup,
+  saturationCup,
 } from "../color-controllers";
 import { ManateaController } from "../manatea-controller";
 
@@ -36,55 +40,52 @@ export class ColorPicker extends LitElement {
   // To auto update when the color changes
   lchController = new ManateaController(this, lchCup);
 
-  renderInput<
-    Property extends
-      | "chroma"
-      | "luminance"
-      | "hue"
-      | "a"
-      | "b"
-      | "red"
-      | "green"
-      | "blue"
-  >(
-    handler: (newValue: number) => void,
-    {
-      state,
-      shortName = state[0].toUpperCase(),
-      id = state[0],
-      cup,
-      min,
-      max,
-      unit = "",
-      referenceColor,
-    }: {
-      state: Property;
-      shortName?: string;
-      cup: Cup<number>;
-      min: number;
-      max: number;
-      unit?: string;
-      id?: string;
-      referenceColor: ColorSpaceObject;
-    }
-  ) {
+  renderInput({
+    label,
+    shortName = label[0].toUpperCase(),
+    id = label[0],
+    cup,
+    min,
+    max,
+    step = 1,
+    mod = (v) => v,
+    unit = "",
+    referenceColor,
+  }: {
+    label: string;
+    shortName?: string;
+    cup: Cup<number>;
+    min: number;
+    max: number;
+    step?: number;
+    mod?: (v: number) => number;
+    unit?: string;
+    id?: string;
+    referenceColor: ColorSpaceObject;
+  }) {
     const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
     return html`
-      <label for="lab-${id}">${shortName} (${state}) </label>
-      <span>${toFixed(cup(), 0)}${unit}</span>
+      <label for="lab-${id}">${shortName} (${label}) </label>
+      <span
+        >${toFixed(
+          mod(cup()),
+          Math.floor(-Math.log(step) / Math.log(10))
+        )}${unit}</span
+      >
       <color-slider
         .id="lab-${id}"
         .min=${min}
         .max=${max}
+        .step=${step}
         .value=${cup()}
         .referenceColor=${referenceColor}
-        .valueToModify=${state[0]}
+        .valueToModify=${label[0]}
         @input=${(event: Event) => {
           const element = event.target as ColorSlider;
           const value = clamp(element.value || 0);
           element.value = value;
-          handler(value);
+          cup(value);
         }}
       />
     `;
@@ -108,23 +109,23 @@ export class ColorPicker extends LitElement {
       <div class="wrapper">
         <div class="group">
           <h2>LCH</h2>
-          ${this.renderInput(luminanceCup, {
-            state: "luminance",
+          ${this.renderInput({
+            label: "luminance",
             cup: luminanceCup,
             min: 0,
             max: 100,
             unit: "º",
             referenceColor: lchCup(),
           })}
-          ${this.renderInput(chromaCup, {
-            state: "chroma",
+          ${this.renderInput({
+            label: "chroma",
             cup: chromaCup,
             min: 0,
             max: 132,
             referenceColor: lchCup(),
           })}
-          ${this.renderInput(hueCup, {
-            state: "hue",
+          ${this.renderInput({
+            label: "hue",
             cup: hueCup,
             min: 0,
             max: 360,
@@ -134,8 +135,8 @@ export class ColorPicker extends LitElement {
 
         <div class="group">
           <h2>Lab</h2>
-          ${this.renderInput(luminanceCup, {
-            state: "luminance",
+          ${this.renderInput({
+            label: "luminance",
             cup: luminanceCup,
             min: 0,
             max: 100,
@@ -143,16 +144,16 @@ export class ColorPicker extends LitElement {
             id: "L2",
             referenceColor: labCup(),
           })}
-          ${this.renderInput(aCup, {
-            state: "a",
+          ${this.renderInput({
+            label: "a",
             shortName: "a",
             cup: aCup,
             min: -128,
             max: 127,
             referenceColor: labCup(),
           })}
-          ${this.renderInput(bCup, {
-            state: "b",
+          ${this.renderInput({
+            label: "b",
             shortName: "b",
             cup: bCup,
             min: -128,
@@ -163,26 +164,57 @@ export class ColorPicker extends LitElement {
 
         <div class="group">
           <h2>RGB</h2>
-          ${this.renderInput(redCup, {
-            state: "red",
+          ${this.renderInput({
+            label: "red",
             cup: redCup,
             min: 0,
             max: 255,
             referenceColor: rgbCup(),
           })}
-          ${this.renderInput(greenCup, {
-            state: "green",
+          ${this.renderInput({
+            label: "green",
             cup: greenCup,
             min: 0,
             max: 255,
             referenceColor: rgbCup(),
           })}
-          ${this.renderInput(blueCup, {
-            state: "blue",
+          ${this.renderInput({
+            label: "blue",
             cup: blueCup,
             min: 0,
             max: 255,
             referenceColor: rgbCup(),
+          })}
+        </div>
+
+        <div class="group">
+          <h2>HSL</h2>
+          ${this.renderInput({
+            label: "hue",
+            cup: fakeHueCup,
+            min: 0,
+            max: 360,
+            referenceColor: hslCup(),
+          })}
+          ${this.renderInput({
+            label: "saturation",
+            cup: saturationCup,
+            min: 0,
+            step: 0.01,
+            max: 1,
+            mod: (v) => v * 100,
+            unit: "%",
+            referenceColor: hslCup(),
+          })}
+          ${this.renderInput({
+            label: "lightness",
+            cup: lightnessCup,
+            min: 0,
+            step: 0.01,
+            max: 1,
+            mod: (v) => v * 100,
+            unit: "%",
+            referenceColor: hslCup(),
           })}
         </div>
 
@@ -200,6 +232,9 @@ export class ColorPicker extends LitElement {
 <code>rgb(${toFixed(redCup())} ${toFixed(greenCup())} ${toFixed(
         blueCup()
       )})</code>
+<code>hsl(${toFixed(fakeHueCup())} ${toFixed(saturationCup()) * 100}% ${toFixed(
+        lightnessCup() * 100
+      )}%)</code>
 <code>${hexRGB}</code></pre>
     `;
   }

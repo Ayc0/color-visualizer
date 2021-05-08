@@ -39,6 +39,8 @@ export class ColorSlider extends LitElement {
   @property({ type: Number, reflect: true })
   max: number = 100;
   @property({ type: Number, reflect: true })
+  step: number = 1;
+  @property({ type: Number, reflect: true })
   value?: number;
 
   @state()
@@ -66,15 +68,17 @@ export class ColorSlider extends LitElement {
       // Only compute every 100ms
       if (this.timePrevOp != null && now - this.timePrevOp < 100) {
         // Start a timeout of 100ms so that if the last update was cancelled, we'll still have a correct render
-        this.throttleId = setTimeout(() => this.requestUpdate(), 100);
+        this.throttleId = window.setTimeout(() => this.requestUpdate(), 100);
         return this.prevBackgroundRange;
       }
     }
 
-    const colorArray = new Uint8ClampedArray((this.max - this.min) * 4);
-    for (let i = 0; i <= this.max - this.min; i++) {
+    const nbOfPoints = Math.round((this.max - this.min) / this.step);
+
+    const colorArray = new Uint8ClampedArray(nbOfPoints * 4);
+    for (let i = 0; i <= nbOfPoints; i++) {
       // @ts-ignore
-      color[this.valueToModify] = i;
+      color[this.valueToModify] = i * this.step;
       const rgb = color.rgb();
       const position = 4 * i;
       colorArray[position + 0] = rgb.r; // R value
@@ -84,10 +88,10 @@ export class ColorSlider extends LitElement {
     }
 
     const canvas = document.createElement("canvas");
-    canvas.width = this.max - this.min;
+    canvas.width = nbOfPoints;
     canvas.height = 1;
 
-    const imageData = new ImageData(colorArray, this.max - this.min, 1);
+    const imageData = new ImageData(colorArray, nbOfPoints, 1);
     const ctx = canvas.getContext("2d", { alpha: false })!;
     ctx.putImageData(imageData, 0, 0);
 
@@ -102,6 +106,7 @@ export class ColorSlider extends LitElement {
     return html`<input
       .min=${this.min}
       .max=${this.max}
+      .step=${this.step}
       .value=${this.value}
       style="--track-background: url(${this.getBackgroundRange()})"
       type="range"

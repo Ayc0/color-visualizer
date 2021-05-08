@@ -1,13 +1,45 @@
 import { createCup } from "manatea";
-import { lch, lab, rgb } from "d3-color";
+import {
+  lch,
+  lab,
+  rgb,
+  hsl,
+  LabColor,
+  HCLColor,
+  RGBColor,
+  HSLColor,
+  ColorSpaceObject,
+} from "d3-color";
 
 const initialLCHColor = lch(57, 110, 283.8);
 const initialLabColor = lab(initialLCHColor);
-const initialRGBColor = rgb(initialLCHColor);
+const initialRGBColor = rgb(initialLCHColor.formatHex());
+const initialHSLColor = hsl(initialLCHColor.formatHex());
 
-export const lchCup = createCup(initialLCHColor);
-export const labCup = createCup(initialLabColor);
-export const rgbCup = createCup(initialRGBColor);
+export const lchCup = createCup(initialLCHColor, (tea) => {
+  tea.l = clamp(0, tea.l, 100);
+  tea.c = clamp(0, tea.c, 132);
+  tea.h = clamp(0, tea.h, 360);
+  return tea;
+});
+export const labCup = createCup(initialLabColor, (tea) => {
+  tea.l = clamp(0, tea.l, 100);
+  tea.a = clamp(-128, tea.a, 127);
+  tea.b = clamp(-128, tea.b, 127);
+  return tea;
+});
+export const rgbCup = createCup(initialRGBColor, (tea) => {
+  tea.r = clamp(0, tea.r, 255);
+  tea.g = clamp(0, tea.g, 255);
+  tea.b = clamp(0, tea.b, 255);
+  return tea;
+});
+export const hslCup = createCup(initialHSLColor, (tea) => {
+  tea.h = clamp(0, tea.h, 360);
+  tea.s = clamp(0, tea.s, 1);
+  tea.l = clamp(0, tea.l, 1);
+  return tea;
+});
 
 export const luminanceCup = createCup<number>(initialLCHColor.l, (tea) =>
   // 0 -> 100
@@ -44,34 +76,27 @@ export const blueCup = createCup<number>(initialRGBColor.b, (tea) =>
   clamp(0, tea, 255)
 );
 
+export const fakeHueCup = createCup<number>(initialHSLColor.h, (tea) =>
+  // 0 -> 360
+  clamp(0, tea, 360)
+);
+export const saturationCup = createCup<number>(initialHSLColor.s, (tea) =>
+  // 0 -> 1
+  clamp(0, tea, 1)
+);
+export const lightnessCup = createCup<number>(initialHSLColor.l, (tea) =>
+  // 0 -> 1
+  clamp(0, tea, 1)
+);
+
 lchCup.on((newLch, context) => {
   luminanceCup(newLch.l, context);
   chromaCup(newLch.c, context);
   hueCup(newLch.h, context);
 
-  labCup((prevLab) => {
-    const newLab = lab(newLch);
-    if (
-      newLab.l !== prevLab.l ||
-      newLab.a !== prevLab.a ||
-      newLab.b !== prevLab.b
-    ) {
-      return newLab;
-    }
-    return prevLab;
-  }, context);
-
-  rgbCup((prevRGB) => {
-    const newRGB = rgb(newLch);
-    if (
-      newRGB.r !== prevRGB.r ||
-      newRGB.g !== prevRGB.g ||
-      newRGB.b !== prevRGB.b
-    ) {
-      return newRGB;
-    }
-    return prevRGB;
-  }, context);
+  labCup((prevLab) => genLab(prevLab, newLch), context);
+  rgbCup((prevRGB) => genRGB(prevRGB, newLch), context);
+  hslCup((prevHSL) => genHSL(prevHSL, newLch), context);
 });
 
 labCup.on((newLab, context) => {
@@ -79,29 +104,9 @@ labCup.on((newLab, context) => {
   aCup(newLab.a, context);
   bCup(newLab.b, context);
 
-  lchCup((prevLCH) => {
-    const newLCH = lch(newLab);
-    if (
-      newLCH.l !== prevLCH.l ||
-      newLCH.c !== prevLCH.c ||
-      newLCH.h !== prevLCH.h
-    ) {
-      return newLCH;
-    }
-    return prevLCH;
-  }, context);
-
-  rgbCup((prevRGB) => {
-    const newRGB = rgb(newLab);
-    if (
-      newRGB.r !== prevRGB.r ||
-      newRGB.g !== prevRGB.g ||
-      newRGB.b !== prevRGB.b
-    ) {
-      return newRGB;
-    }
-    return prevRGB;
-  }, context);
+  lchCup((prevLCH) => genLCH(prevLCH, newLab), context);
+  rgbCup((prevRGB) => genRGB(prevRGB, newLab), context);
+  hslCup((prevHSL) => genHSL(prevHSL, newLab), context);
 });
 
 rgbCup.on((newRGB, context) => {
@@ -109,29 +114,19 @@ rgbCup.on((newRGB, context) => {
   blueCup(newRGB.b, context);
   greenCup(newRGB.g, context);
 
-  lchCup((prevLCH) => {
-    const newLCH = lch(newRGB);
-    if (
-      newLCH.l !== prevLCH.l ||
-      newLCH.c !== prevLCH.c ||
-      newLCH.h !== prevLCH.h
-    ) {
-      return newLCH;
-    }
-    return prevLCH;
-  }, context);
+  lchCup((prevLCH) => genLCH(prevLCH, newRGB), context);
+  labCup((prevLab) => genLab(prevLab, newRGB), context);
+  hslCup((prevHSL) => genHSL(prevHSL, newRGB), context);
+});
 
-  labCup((prevLab) => {
-    const newLab = lab(newRGB);
-    if (
-      newLab.l !== prevLab.l ||
-      newLab.a !== prevLab.a ||
-      newLab.b !== prevLab.b
-    ) {
-      return newLab;
-    }
-    return prevLab;
-  }, context);
+hslCup.on((newHSL, context) => {
+  fakeHueCup(newHSL.h, context);
+  saturationCup(newHSL.s, context);
+  lightnessCup(newHSL.l, context);
+
+  lchCup((prevLCH) => genLCH(prevLCH, newHSL), context);
+  labCup((prevLab) => genLab(prevLab, newHSL), context);
+  rgbCup((prevRGB) => genRGB(prevRGB, newHSL), context);
 });
 
 luminanceCup.on((newLuminance, context) => {
@@ -198,6 +193,73 @@ blueCup.on((newBlue, context) => {
   }, context);
 });
 
+fakeHueCup.on((newHue, context) => {
+  hslCup((prevHSL) => {
+    const newHSL = prevHSL.copy();
+    newHSL.h = newHue;
+    return newHSL;
+  }, context);
+});
+saturationCup.on((newSaturation, context) => {
+  hslCup((prevHSL) => {
+    const newHSL = prevHSL.copy();
+    newHSL.s = newSaturation;
+    return newHSL;
+  }, context);
+});
+lightnessCup.on((newLightness, context) => {
+  hslCup((prevHSL) => {
+    const newHSL = prevHSL.copy();
+    newHSL.l = newLightness;
+    return newHSL;
+  }, context);
+});
+
 function clamp(min: number, number: number, max: number) {
   return Math.min(max, Math.max(min, number || 0));
+}
+
+function genLCH(previousLCH: HCLColor, newColor: ColorSpaceObject) {
+  const newLCH = lch(newColor);
+  if (
+    newLCH.l !== previousLCH.l ||
+    newLCH.c !== previousLCH.c ||
+    newLCH.h !== previousLCH.h
+  ) {
+    return newLCH;
+  }
+  return previousLCH;
+}
+function genLab(previousLab: LabColor, newColor: ColorSpaceObject) {
+  const newLab = lab(newColor);
+  if (
+    newLab.l !== previousLab.l ||
+    newLab.a !== previousLab.a ||
+    newLab.b !== previousLab.b
+  ) {
+    return newLab;
+  }
+  return previousLab;
+}
+function genRGB(previousRGB: RGBColor, newColor: ColorSpaceObject) {
+  const newRGB = rgb(newColor.formatHex());
+  if (
+    newRGB.r !== previousRGB.r ||
+    newRGB.g !== previousRGB.g ||
+    newRGB.b !== previousRGB.b
+  ) {
+    return newRGB;
+  }
+  return previousRGB;
+}
+function genHSL(previousHSL: HSLColor, newColor: ColorSpaceObject) {
+  const newHSL = hsl(newColor.formatHex());
+  if (
+    newHSL.h !== previousHSL.h ||
+    newHSL.s !== previousHSL.s ||
+    newHSL.l !== previousHSL.l
+  ) {
+    return newHSL;
+  }
+  return previousHSL;
 }
