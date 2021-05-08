@@ -147,14 +147,20 @@ export class ColorSlider extends LitElement {
       outline: none;
     }
 
-    /*
-    :host input[type="range"]:hover::-webkit-slider-runnable-track {
-      background: ${trackBackgroundHover};
+    :host input[type="range"]:hover::-moz-range-thumb {
+      background: #00000044;
     }
-    :host input[type="range"]:focus::-webkit-slider-runnable-track {
-      background: ${trackBackgroundFocus};
+    :host input[type="range"]:hover::-webkit-slider-thumb {
+      background: #00000044;
     }
-    */
+    :host input[type="range"]:focus-visible::-moz-range-thumb {
+      outline: -moz-mac-focusring auto 1px;
+      outline-offset: 1px;
+    }
+    :host input[type="range"]:focus-visible::-webkit-slider-thumb {
+      outline: -webkit-focus-ring-color auto 1px;
+      outline-offset: 1px;
+    }
   `;
 }
 
