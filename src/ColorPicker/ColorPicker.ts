@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { Cup } from "manatea";
 
 import { ColorSpaceObject } from "d3-color";
@@ -35,10 +35,28 @@ function toFixed(number: number, decimal: number = 2) {
   return Math.round(number * dec) / dec;
 }
 
+const view = window.matchMedia("(max-width: 595px)");
+
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
   // To auto update when the color changes
   lchController = new ManateaController(this, lchCup);
+
+  @state()
+  isMobile: boolean = view.matches;
+
+  viewListener = (mqle: MediaQueryListEvent) => {
+    this.isMobile = mqle.matches;
+  };
+
+  constructor() {
+    super();
+    view.addListener(this.viewListener);
+  }
+
+  disconnectedCallback() {
+    view.removeListener(this.viewListener);
+  }
 
   renderInput({
     label,
@@ -107,134 +125,142 @@ export class ColorPicker extends LitElement {
     const hexRGB = `#${toHex(redCup())}${toHex(greenCup())}${toHex(blueCup())}`;
     return html`
       <div class="wrapper">
-        <div class="group">
-          <h2>LCH</h2>
-          ${this.renderInput({
-            label: "luminance",
-            cup: luminanceCup,
-            min: 0,
-            max: 100,
-            unit: "º",
-            referenceColor: lchCup(),
-          })}
-          ${this.renderInput({
-            label: "chroma",
-            cup: chromaCup,
-            min: 0,
-            max: 132,
-            referenceColor: lchCup(),
-          })}
-          ${this.renderInput({
-            label: "hue",
-            cup: hueCup,
-            min: 0,
-            max: 360,
-            referenceColor: lchCup(),
-          })}
+        <details open>
+          <summary><h2>LCH</h2></summary>
+          <div class="group">
+            ${this.renderInput({
+              label: "luminance",
+              cup: luminanceCup,
+              min: 0,
+              max: 100,
+              unit: "º",
+              referenceColor: lchCup(),
+            })}
+            ${this.renderInput({
+              label: "chroma",
+              cup: chromaCup,
+              min: 0,
+              max: 132,
+              referenceColor: lchCup(),
+            })}
+            ${this.renderInput({
+              label: "hue",
+              cup: hueCup,
+              min: 0,
+              max: 360,
+              referenceColor: lchCup(),
+            })}
 
-          <pre class="code-wrapper"><code class="code">LCH(${toFixed(
-            luminanceCup()
-          )}% ${toFixed(chromaCup())} ${toFixed(hueCup())})</code></pre>
-        </div>
+            <pre class="code-wrapper"><code class="code">LCH(${toFixed(
+              luminanceCup()
+            )}% ${toFixed(chromaCup())} ${toFixed(hueCup())})</code></pre>
+          </div>
+        </details>
 
-        <div class="group">
-          <h2>Lab</h2>
-          ${this.renderInput({
-            label: "luminance",
-            cup: luminanceCup,
-            min: 0,
-            max: 100,
-            unit: "º",
-            id: "L2",
-            referenceColor: labCup(),
-          })}
-          ${this.renderInput({
-            label: "a",
-            shortName: "a",
-            cup: aCup,
-            min: -128,
-            max: 127,
-            referenceColor: labCup(),
-          })}
-          ${this.renderInput({
-            label: "b",
-            shortName: "b",
-            cup: bCup,
-            min: -128,
-            max: 127,
-            referenceColor: labCup(),
-          })}
+        <details ?open=${!this.isMobile}>
+          <summary><h2>Lab</h2></summary>
+          <div class="group">
+            ${this.renderInput({
+              label: "luminance",
+              cup: luminanceCup,
+              min: 0,
+              max: 100,
+              unit: "º",
+              id: "L2",
+              referenceColor: labCup(),
+            })}
+            ${this.renderInput({
+              label: "a",
+              shortName: "a",
+              cup: aCup,
+              min: -128,
+              max: 127,
+              referenceColor: labCup(),
+            })}
+            ${this.renderInput({
+              label: "b",
+              shortName: "b",
+              cup: bCup,
+              min: -128,
+              max: 127,
+              referenceColor: labCup(),
+            })}
 
-          <pre class="code-wrapper"><code class='code'>Lab(${toFixed(
-            luminanceCup()
-          )}% ${toFixed(aCup())} ${toFixed(bCup())})</code></pre>
-        </div>
+            <pre class="code-wrapper"><code class='code'>Lab(${toFixed(
+              luminanceCup()
+            )}% ${toFixed(aCup())} ${toFixed(bCup())})</code></pre>
+          </div>
+        </details>
 
-        <div class="group">
-          <h2>RGB</h2>
-          ${this.renderInput({
-            label: "red",
-            cup: redCup,
-            min: 0,
-            max: 255,
-            referenceColor: rgbCup(),
-          })}
-          ${this.renderInput({
-            label: "green",
-            cup: greenCup,
-            min: 0,
-            max: 255,
-            referenceColor: rgbCup(),
-          })}
-          ${this.renderInput({
-            label: "blue",
-            cup: blueCup,
-            min: 0,
-            max: 255,
-            referenceColor: rgbCup(),
-          })}
+        <details ?open=${!this.isMobile}>
+          <summary><h2>RGB</h2></summary>
+          <div class="group">
+            ${this.renderInput({
+              label: "red",
+              cup: redCup,
+              min: 0,
+              max: 255,
+              referenceColor: rgbCup(),
+            })}
+            ${this.renderInput({
+              label: "green",
+              cup: greenCup,
+              min: 0,
+              max: 255,
+              referenceColor: rgbCup(),
+            })}
+            ${this.renderInput({
+              label: "blue",
+              cup: blueCup,
+              min: 0,
+              max: 255,
+              referenceColor: rgbCup(),
+            })}
 
-          <pre class="code-wrapper"><code class='code'>rgb(${toFixed(
-            redCup()
-          )} ${toFixed(greenCup())} ${toFixed(blueCup())})</code>
+            <pre class="code-wrapper"><code class='code'>rgb(${toFixed(
+              redCup()
+            )} ${toFixed(greenCup())} ${toFixed(blueCup())})</code>
 <code class='code'>${hexRGB}</code></pre>
-        </div>
+          </div>
+        </details>
 
-        <div class="group">
-          <h2>HSL</h2>
-          ${this.renderInput({
-            label: "hue",
-            cup: fakeHueCup,
-            min: 0,
-            max: 360,
-            referenceColor: hslCup(),
-          })}
-          ${this.renderInput({
-            label: "saturation",
-            cup: saturationCup,
-            min: 0,
-            step: 0.01,
-            max: 1,
-            mod: (v) => v * 100,
-            unit: "%",
-            referenceColor: hslCup(),
-          })}
-          ${this.renderInput({
-            label: "lightness",
-            cup: lightnessCup,
-            min: 0,
-            step: 0.01,
-            max: 1,
-            mod: (v) => v * 100,
-            unit: "%",
-            referenceColor: hslCup(),
-          })}
-          <pre class="code-wrapper"><code class='code'>hsl(${toFixed(
-            fakeHueCup()
-          )} ${toFixed(saturationCup()) * 100}% ${toFixed(
-            lightnessCup() * 100
-          )}%)</code></pre>
-        </div>
+        <details ?open=${!this.isMobile}>
+          <summary><h2>HSL</h2></summary>
+          <div class="group">
+            ${this.renderInput({
+              label: "hue",
+              cup: fakeHueCup,
+              min: 0,
+              max: 360,
+              referenceColor: hslCup(),
+            })}
+            ${this.renderInput({
+              label: "saturation",
+              cup: saturationCup,
+              min: 0,
+              step: 0.01,
+              max: 1,
+              mod: (v) => v * 100,
+              unit: "%",
+              referenceColor: hslCup(),
+            })}
+            ${this.renderInput({
+              label: "lightness",
+              cup: lightnessCup,
+              min: 0,
+              step: 0.01,
+              max: 1,
+              mod: (v) => v * 100,
+              unit: "%",
+              referenceColor: hslCup(),
+            })}
+            <pre class="code-wrapper"><code class='code'>hsl(${toFixed(
+              fakeHueCup()
+            )} ${toFixed(saturationCup()) * 100}% ${toFixed(
+              lightnessCup() * 100
+            )}%)</code></pre>
+          </div>
+        </details>
       </div>
     `;
   }
@@ -259,15 +285,17 @@ export class ColorPicker extends LitElement {
 
     :host .group {
       display: grid;
-      /* 93px looks good */
       grid-template-columns: 1fr 5ch;
-      grid-template-rows: repeat(7, auto) 1fr;
+      grid-template-rows: repeat(6, auto) 1fr;
       column-gap: 1em;
       row-gap: 0.5em;
+
+      margin-top: 1em;
     }
 
     :host h2 {
-      grid-column: span 2;
+      display: inline-block;
+      margin: 0;
     }
 
     :host label {
