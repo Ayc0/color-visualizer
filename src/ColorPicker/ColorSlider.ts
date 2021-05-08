@@ -6,14 +6,15 @@ import { ColorSpaceObject, rgb } from "d3-color";
 const height = 20;
 const offset = 1;
 const borderWidth = 1;
-const borderColor = css`grey`;
+const borderColor = css`var(--contrast)`;
 
 const thumbWidth = 14;
 const thumbStyles = css`
   width: ${thumbWidth}px;
   height: ${height + offset * 2}px;
   background: #00000000;
-  box-shadow: 0 0 0 ${borderWidth}px black, inset 0 0 0 ${borderWidth}px white;
+  box-shadow: 0 0 0 ${borderWidth}px var(--black),
+    inset 0 0 0 ${borderWidth}px var(--white);
   border-radius: 3px;
   cursor: pointer;
 `;

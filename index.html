@@ -13,11 +13,32 @@
       rel="stylesheet"
     />
     <style>
+      :root {
+        --black: #2c2d2f;
+        --white: white;
+        --contrast: var(--black);
+      }
+      html {
+        padding: 1em;
+      }
       body {
+        background-color: var(--white);
+        color: var(--black);
         max-width: 50em;
         margin: auto;
-        padding: 1em;
+        padding: 0.5em;
         font-family: "Inter", sans-serif;
+        border-radius: 0.5em;
+        box-shadow: 0 0 0 1px var(--black), inset 0 0 0 1px var(--white);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --contrast: var(--white);
+        }
+        body {
+          background-color: var(--black);
+          color: var(--white);
+        }
       }
     </style>
   </head>

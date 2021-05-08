@@ -140,7 +140,7 @@ export class LCHPaint extends LitElement {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      border: 1px solid black;
+      border: 1px solid var(--contrast);
       z-index: 1;
     }
   `;
