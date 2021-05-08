@@ -259,6 +259,11 @@ export class ColorPicker extends LitElement {
       /* Avoid making the page scroll on mobile when we are pressing on it */
       touch-action: none;
     }
+
+    :host pre,
+    :host code {
+      font-family: "Fira Code", monospace;
+    }
   `;
 }
 
