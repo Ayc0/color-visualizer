@@ -1,4 +1,4 @@
-import { createCup } from "manatea";
+import { orderCup } from "manatea";
 import {
   lch,
   lab,
@@ -16,75 +16,75 @@ const initialLabColor = lab(initialLCHColor);
 const initialRGBColor = rgb(initialLCHColor.formatHex());
 const initialHSLColor = hsl(initialLCHColor.formatHex());
 
-export const lchCup = createCup(initialLCHColor, (tea) => {
+export const lchCup = orderCup(initialLCHColor, (tea) => {
   tea.l = clamp(0, tea.l, 100);
   tea.c = clamp(0, tea.c, 132);
   tea.h = clamp(0, tea.h, 360);
   return tea;
 });
-export const labCup = createCup(initialLabColor, (tea) => {
+export const labCup = orderCup(initialLabColor, (tea) => {
   tea.l = clamp(0, tea.l, 100);
   tea.a = clamp(-128, tea.a, 127);
   tea.b = clamp(-128, tea.b, 127);
   return tea;
 });
-export const rgbCup = createCup(initialRGBColor, (tea) => {
+export const rgbCup = orderCup(initialRGBColor, (tea) => {
   tea.r = clamp(0, tea.r, 255);
   tea.g = clamp(0, tea.g, 255);
   tea.b = clamp(0, tea.b, 255);
   return tea;
 });
-export const hslCup = createCup(initialHSLColor, (tea) => {
+export const hslCup = orderCup(initialHSLColor, (tea) => {
   tea.h = clamp(0, tea.h, 360);
   tea.s = clamp(0, tea.s, 1);
   tea.l = clamp(0, tea.l, 1);
   return tea;
 });
 
-export const luminanceCup = createCup<number>(initialLCHColor.l, (tea) =>
+export const luminanceCup = orderCup<number>(initialLCHColor.l, (tea) =>
   // 0 -> 100
   clamp(0, tea, 100)
 );
-export const chromaCup = createCup<number>(initialLCHColor.c, (tea) =>
+export const chromaCup = orderCup<number>(initialLCHColor.c, (tea) =>
   // 0 -> 132
   clamp(0, tea, 132)
 );
-export const hueCup = createCup<number>(initialLCHColor.h, (tea) =>
+export const hueCup = orderCup<number>(initialLCHColor.h, (tea) =>
   // 0 -> 360
   clamp(0, tea, 360)
 );
 
-export const aCup = createCup<number>(initialLabColor.a, (tea) =>
+export const aCup = orderCup<number>(initialLabColor.a, (tea) =>
   // -128 -> 127
   clamp(-128, tea, 127)
 );
-export const bCup = createCup<number>(initialLabColor.b, (tea) =>
+export const bCup = orderCup<number>(initialLabColor.b, (tea) =>
   // -128 -> 127
   clamp(-128, tea, 127)
 );
 
-export const redCup = createCup<number>(initialRGBColor.r, (tea) =>
+export const redCup = orderCup<number>(initialRGBColor.r, (tea) =>
   // 0 -> 255
   clamp(0, tea, 255)
 );
-export const greenCup = createCup<number>(initialRGBColor.g, (tea) =>
+export const greenCup = orderCup<number>(initialRGBColor.g, (tea) =>
   // 0 -> 255
   clamp(0, tea, 255)
 );
-export const blueCup = createCup<number>(initialRGBColor.b, (tea) =>
+export const blueCup = orderCup<number>(initialRGBColor.b, (tea) =>
   // 0 -> 255
   clamp(0, tea, 255)
 );
 
-export const fakeHueCup = createCup<number>(initialHSLColor.h, (tea) =>
+export const fakeHueCup = orderCup<number>(initialHSLColor.h, (tea) =>
   // 0 -> 360
   clamp(0, tea, 360)
 );
-export const saturationCup = createCup<number>(initialHSLColor.s, (tea) =>
+export const saturationCup = orderCup<number>(initialHSLColor.s, (tea) =>
   // 0 -> 1
   clamp(0, tea, 1)
 );
-export const lightnessCup = createCup<number>(initialHSLColor.l, (tea) =>
+export const lightnessCup = orderCup<number>(initialHSLColor.l, (tea) =>
   // 0 -> 1
   clamp(0, tea, 1)
 );
