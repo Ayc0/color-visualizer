@@ -281,10 +281,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lit/reactive-element@npm:^1.0.0-rc.2":
-  version: 1.0.0-rc.2
-  resolution: "@lit/reactive-element@npm:1.0.0-rc.2"
-  checksum: 9262c29596aee0d10d7987d93e95373987eececf38d9656edec0dc3e9952a96418210768d71c5c1cf0856da49cb9a759c7e71c38e1f5710df11b9499979bfd2c
+"@lit/reactive-element@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@lit/reactive-element@npm:1.0.1"
+  checksum: 82f8eb195acb766413fa37dafab8dc853547e5fbb901318d9911b3f9410a15ceea37c9a4b0954ab37710e91140af243148af9f72ec3bd14fe71e1d03faaaad7a
   languageName: node
   linkType: hard
 
@@ -1183,10 +1183,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/trusted-types@npm:^1.0.1":
-  version: 1.0.6
-  resolution: "@types/trusted-types@npm:1.0.6"
-  checksum: 22b8efcb6116ab80d07542047135618ee282f2060c481e472126604d838c09e7dad33c9462d88c130aef2c3133aece516f00d6af7ff814f0612f7d19db720e6d
+"@types/trusted-types@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@types/trusted-types@npm:2.0.2"
+  checksum: 3371eef5f1c50e1c3c07a127c1207b262ba65b83dd167a1c460fc1b135a3fb0c97b9f508efebd383f239cc5dd5b7169093686a692a501fde9c3f7208657d9b0d
   languageName: node
   linkType: hard
 
@@ -2018,7 +2018,7 @@ __metadata:
     "@parcel/transformer-typescript-tsc": 2.0.0
     "@types/d3-color": ^3.0.2
     d3-color: ^3.0.1
-    lit: ^2.0.0-rc.2
+    lit: ^2.0.2
     manatea: ^0.5.0-beta.6
     parcel: 2.0.0
     serve: 12.0.1
@@ -4243,33 +4243,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lit-element@npm:^3.0.0-rc.2":
-  version: 3.0.0-rc.2
-  resolution: "lit-element@npm:3.0.0-rc.2"
+"lit-element@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "lit-element@npm:3.0.1"
   dependencies:
-    "@lit/reactive-element": ^1.0.0-rc.2
-    lit-html: ^2.0.0-rc.3
-  checksum: 02b322b1dca84dd9808ceaed4aff01a16d8760f17d78376a6ae3b6c83b9d26982b27a98e6e8b7901bc8a3c4617be466e962ff19ac10d0402e1c45db853261b91
+    "@lit/reactive-element": ^1.0.0
+    lit-html: ^2.0.0
+  checksum: 3735cd1b96efb44f1ecdcb07406604d7c6feeab07f81cfc904a0f9ab806fab1211e8bf68827513b12e12e61448e3cd6508664d433abd3f0c5c4408b0a6b2d7a6
   languageName: node
   linkType: hard
 
-"lit-html@npm:^2.0.0-rc.3":
-  version: 2.0.0-rc.3
-  resolution: "lit-html@npm:2.0.0-rc.3"
+"lit-html@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "lit-html@npm:2.0.1"
   dependencies:
-    "@types/trusted-types": ^1.0.1
-  checksum: 828168d0b29cb966016d58b0f00da7c49f01eaec3370f2a580ad683440e47341a0b57a371d29e15e0f452d295e10f3c95646a1684d72015a4d74f1cf3fa48c82
+    "@types/trusted-types": ^2.0.2
+  checksum: 7ee9e909ec59009539d5b2d7bd07ceb6e182ed5c6535f36da5265dd2f5dc39f9e5f445e8272953a26948ff5724cf110836c792c439883527a2a3b46ecdbbb395
   languageName: node
   linkType: hard
 
-"lit@npm:^2.0.0-rc.2":
-  version: 2.0.0-rc.2
-  resolution: "lit@npm:2.0.0-rc.2"
+"lit@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "lit@npm:2.0.2"
   dependencies:
-    "@lit/reactive-element": ^1.0.0-rc.2
-    lit-element: ^3.0.0-rc.2
-    lit-html: ^2.0.0-rc.3
-  checksum: 430bef3cd2261b3044558dc59ea19ebbdf046ec5fe672f1729c43b1cd156001ab6e51c420ea54b5b0026457665ebaddba8b249f398800bdcf238656d7b162f9b
+    "@lit/reactive-element": ^1.0.0
+    lit-element: ^3.0.0
+    lit-html: ^2.0.0
+  checksum: 52a04b25164da1683c7295b305087794f175165cd1561e03f0c50ae998823f0e26101c82add05dea773e35472fbe3ed84486a4685294897f588d126fe8419e05
   languageName: node
   linkType: hard
 
