@@ -1,29 +1,10 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { Cup } from "manatea";
-
-import { ColorSpaceObject } from "d3-color";
 
 import type { ColorSlider } from "./ColorSlider";
 import "./ColorSlider";
 
-import {
-  aCup,
-  bCup,
-  blueCup,
-  chromaCup,
-  fakeHueCup,
-  greenCup,
-  hslCup,
-  hueCup,
-  labCup,
-  lchCup,
-  lightnessCup,
-  luminanceCup,
-  redCup,
-  rgbCup,
-  saturationCup,
-} from "../color-controllers";
+import { colorController, Type, Kind } from "../color-controller";
 import { ManateaController } from "../manatea-controller";
 
 function toHex(color: number) {
@@ -40,7 +21,7 @@ const view = window.matchMedia("(max-width: 595px)");
 @customElement("color-picker")
 export class ColorPicker extends LitElement {
   // To auto update when the color changes
-  lchController = new ManateaController(this, lchCup);
+  lchController = new ManateaController(this, colorController);
 
   @state()
   isMobile: boolean = view.matches;
@@ -58,51 +39,61 @@ export class ColorPicker extends LitElement {
     view.removeListener(this.viewListener);
   }
 
-  renderInput({
+  renderInput<T extends Type>({
+    category,
+    kind,
     label,
-    shortName = label[0].toUpperCase(),
-    id = label[0],
-    cup,
+    shortName = kind.toUpperCase(),
     min,
     max,
     step = 1,
     mod = (v) => v,
     unit = "",
-    referenceColor,
   }: {
+    category: T;
+    kind: Kind[T];
     label: string;
     shortName?: string;
-    cup: Cup<number>;
     min: number;
     max: number;
     step?: number;
     mod?: (v: number) => number;
     unit?: string;
-    id?: string;
-    referenceColor: ColorSpaceObject;
   }) {
     const clamp = (n: number) => Math.min(max, Math.max(min, n));
 
+    const stored = colorController();
+    // @ts-expect-error
+    const value = stored[category].values[kind];
+
+    const id = `${category}--${kind}`;
+
     return html`
-      <label for="lab-${id}">${shortName} (${label})</label>
+      <label for="slider-${id}">${shortName} (${label})</label>
       <color-slider
-        .id="lab-${id}"
+        .id="slider-${id}"
         .min=${min}
         .max=${max}
         .step=${step}
-        .value=${cup()}
-        .referenceColor=${referenceColor}
+        .value=${value}
+        .referenceColor=${stored[category].raw}
         .valueToModify=${label[0]}
         @input=${(event: Event) => {
           const element = event.target as ColorSlider;
-          const value = clamp(element.value || 0);
-          element.value = value;
-          cup(value);
+          const newValue = clamp(element.value || 0);
+          element.value = newValue;
+          colorController([
+            {
+              type: category,
+              kind,
+              value: newValue,
+            },
+          ]);
         }}
       ></color-slider>
       <span
         >${toFixed(
-          mod(cup()),
+          mod(value),
           Math.floor(-Math.log(step) / Math.log(10))
         )}${unit}</span
       >
@@ -117,43 +108,48 @@ export class ColorPicker extends LitElement {
 
     // Only update if the update was related to LCH, otherwise no
     if (keys.size === 0) {
-      lchCup();
+      // lchCup();
     }
   }
 
   render() {
-    const hexRGB = `#${toHex(redCup())}${toHex(greenCup())}${toHex(blueCup())}`;
+    const stored = colorController();
+    const hexRGB = `#${toHex(stored.rgb.values.r)}${toHex(
+      stored.rgb.values.g
+    )}${toHex(stored.rgb.values.b)}`;
     return html`
       <div class="wrapper">
         <details open>
           <summary><h2>LCH</h2></summary>
           <div class="group">
             ${this.renderInput({
+              category: "lch",
+              kind: "l",
               label: "luminance",
-              cup: luminanceCup,
               min: 0,
               max: 100,
               unit: "º",
-              referenceColor: lchCup(),
             })}
             ${this.renderInput({
+              category: "lch",
+              kind: "c",
               label: "chroma",
-              cup: chromaCup,
               min: 0,
               max: 132,
-              referenceColor: lchCup(),
             })}
             ${this.renderInput({
+              category: "lch",
+              kind: "h",
               label: "hue",
-              cup: hueCup,
               min: 0,
               max: 360,
-              referenceColor: lchCup(),
             })}
 
             <pre class="code-wrapper"><code class="code">LCH(${toFixed(
-              luminanceCup()
-            )}% ${toFixed(chromaCup())} ${toFixed(hueCup())})</code></pre>
+              stored.lch.values.l
+            )}% ${toFixed(stored.lch.values.c)} ${toFixed(
+              stored.lch.values.h
+            )})</code></pre>
           </div>
         </details>
 
@@ -161,34 +157,35 @@ export class ColorPicker extends LitElement {
           <summary><h2>Lab</h2></summary>
           <div class="group">
             ${this.renderInput({
+              category: "lab",
+              kind: "l",
               label: "luminance",
-              cup: luminanceCup,
               min: 0,
               max: 100,
               unit: "º",
-              id: "L2",
-              referenceColor: labCup(),
             })}
             ${this.renderInput({
+              category: "lab",
+              kind: "a",
               label: "a",
               shortName: "a",
-              cup: aCup,
               min: -128,
               max: 127,
-              referenceColor: labCup(),
             })}
             ${this.renderInput({
+              category: "lab",
+              kind: "b",
               label: "b",
               shortName: "b",
-              cup: bCup,
               min: -128,
               max: 127,
-              referenceColor: labCup(),
             })}
 
             <pre class="code-wrapper"><code class='code'>Lab(${toFixed(
-              luminanceCup()
-            )}% ${toFixed(aCup())} ${toFixed(bCup())})</code></pre>
+              stored.lab.values.l
+            )}% ${toFixed(stored.lab.values.a)} ${toFixed(
+              stored.lab.values.b
+            )})</code></pre>
           </div>
         </details>
 
@@ -196,30 +193,32 @@ export class ColorPicker extends LitElement {
           <summary><h2>RGB</h2></summary>
           <div class="group">
             ${this.renderInput({
+              category: "rgb",
+              kind: "r",
               label: "red",
-              cup: redCup,
               min: 0,
               max: 255,
-              referenceColor: rgbCup(),
             })}
             ${this.renderInput({
+              category: "rgb",
+              kind: "g",
               label: "green",
-              cup: greenCup,
               min: 0,
               max: 255,
-              referenceColor: rgbCup(),
             })}
             ${this.renderInput({
+              category: "rgb",
+              kind: "b",
               label: "blue",
-              cup: blueCup,
               min: 0,
               max: 255,
-              referenceColor: rgbCup(),
             })}
 
             <pre class="code-wrapper"><code class='code'>rgb(${toFixed(
-              redCup()
-            )} ${toFixed(greenCup())} ${toFixed(blueCup())})</code>
+              stored.rgb.values.r
+            )} ${toFixed(stored.rgb.values.g)} ${toFixed(
+              stored.rgb.values.b
+            )})</code>
 <code class='code'>${hexRGB}</code></pre>
           </div>
         </details>
@@ -228,36 +227,37 @@ export class ColorPicker extends LitElement {
           <summary><h2>HSL</h2></summary>
           <div class="group">
             ${this.renderInput({
+              category: "hsl",
+              kind: "h",
               label: "hue",
-              cup: fakeHueCup,
               min: 0,
               max: 360,
-              referenceColor: hslCup(),
             })}
             ${this.renderInput({
+              category: "hsl",
+              kind: "s",
               label: "saturation",
-              cup: saturationCup,
               min: 0,
               step: 0.01,
               max: 1,
               mod: (v) => v * 100,
               unit: "%",
-              referenceColor: hslCup(),
             })}
             ${this.renderInput({
+              category: "hsl",
+              kind: "l",
               label: "lightness",
-              cup: lightnessCup,
               min: 0,
               step: 0.01,
               max: 1,
               mod: (v) => v * 100,
               unit: "%",
-              referenceColor: hslCup(),
             })}
+
             <pre class="code-wrapper"><code class='code'>hsl(${toFixed(
-              fakeHueCup()
-            )} ${toFixed(saturationCup()) * 100}% ${toFixed(
-              lightnessCup() * 100
+              stored.hsl.values.h
+            )} ${toFixed(stored.hsl.values.s) * 100}% ${toFixed(
+              stored.hsl.values.l * 100
             )}%)</code></pre>
           </div>
         </details>

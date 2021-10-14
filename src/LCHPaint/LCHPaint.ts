@@ -1,9 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, eventOptions } from "lit/decorators.js";
 import { query } from "lit/decorators/query.js";
-import { lch } from "d3-color";
 
-import { lchCup, hueCup } from "../color-controllers";
+import { colorController } from "../color-controller";
 
 import { createGenerateColors } from "./generate-colors";
 
@@ -35,12 +34,21 @@ export class LCHPaint extends LitElement {
     const x = Math.min(Math.max(event.clientX - rect.x, 0), rect.width);
     const y = Math.min(Math.max(event.clientY - rect.y, 0), rect.height);
 
-    const newColor = lch(
-      Math.floor((1 - y / rect.height) * 100),
-      Math.floor((x / rect.width) * 132),
-      lchCup().h
-    );
-    lchCup(newColor);
+    const l = Math.floor((1 - y / rect.height) * 100);
+    const c = Math.floor((x / rect.width) * 132);
+
+    colorController([
+      {
+        type: "lch",
+        kind: "l",
+        value: l,
+      },
+      {
+        type: "lch",
+        kind: "c",
+        value: c,
+      },
+    ]);
   }
 
   updateMarkerPosition = () => {
@@ -50,8 +58,9 @@ export class LCHPaint extends LitElement {
       return;
     }
     const rect = canvas.getBoundingClientRect();
-    const x = Math.floor((lchCup().c / 132) * rect.width);
-    const y = Math.floor((1 - lchCup().l / 100) * rect.height);
+    const lch = colorController().lch.values;
+    const x = Math.floor((lch.c / 132) * rect.width);
+    const y = Math.floor((1 - lch.l / 100) * rect.height);
 
     marker.style.cssText = `transform: translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
   };
@@ -66,19 +75,20 @@ export class LCHPaint extends LitElement {
       return;
     }
 
-    this.generateColors(lchCup().h, this.width, this.height).then(
-      (colorArray) => {
-        const imageData = new ImageData(colorArray, this.width, this.height);
-        ctx.putImageData(imageData, 0, 0);
-      }
-    );
+    const lch = colorController().lch.values;
+
+    this.generateColors(lch.h, this.width, this.height).then((colorArray) => {
+      const imageData = new ImageData(colorArray, this.width, this.height);
+      ctx.putImageData(imageData, 0, 0);
+    });
   };
 
   constructor() {
     super();
-    hueCup.on(() => this.updateCanvasColors());
-
-    lchCup.on(() => this.updateMarkerPosition());
+    colorController.on(() => {
+      this.updateCanvasColors();
+      this.updateMarkerPosition();
+    });
   }
 
   firstUpdated() {
