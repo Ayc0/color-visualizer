@@ -1,13 +1,20 @@
-import { ReactiveController, ReactiveControllerHost } from "lit";
+import type { ReactiveController, ReactiveControllerHost } from "lit";
 
-import { Tea, Cup, Listener } from "manatea";
+import type { Tea, Cup, Server } from "manatea";
 
-export class ManateaController<T extends Tea> implements ReactiveController {
+export class ManateaController<
+  FlavoredTea extends Tea,
+  UnflavoredTea extends Tea = FlavoredTea
+> implements ReactiveController
+{
   private host: ReactiveControllerHost;
-  cup: Cup<T>;
-  private listener: Listener;
+  cup: Cup<FlavoredTea, UnflavoredTea>;
+  private listener: Server;
 
-  constructor(host: ReactiveControllerHost, cup: Cup<T>) {
+  constructor(
+    host: ReactiveControllerHost,
+    cup: Cup<FlavoredTea, UnflavoredTea>
+  ) {
     this.host = host;
     host.addController(this);
 
