@@ -2019,7 +2019,7 @@ __metadata:
     "@types/d3-color": ^3.0.2
     d3-color: ^3.0.1
     lit: ^2.0.2
-    manatea: ^0.5.0-beta.9
+    manatea: ^0.5.0
     parcel: 2.0.0
     serve: 12.0.1
     typescript: 4.4.4
@@ -4405,10 +4405,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"manatea@npm:^0.5.0-beta.9":
-  version: 0.5.0-beta.9
-  resolution: "manatea@npm:0.5.0-beta.9"
-  checksum: 8e6207a2f46bb6acabd5535d81fe492cf2320b439a3b0c59f6a7151a0e00c02b7ac43169710593cc03d15cf60232fa168858955d8cf52132c8cc83949df8c318
+"manatea@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "manatea@npm:0.5.0"
+  checksum: 6aa938ec4acc92abc3789d7dad6b69913dc200a9a0500e7cef80f50dae5bf6f9ddd3b8c92c97adc1358b3643c8c8d372adbec731e11400e239c98a4270bbb7c3
   languageName: node
   linkType: hard
 
