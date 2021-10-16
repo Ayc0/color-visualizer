@@ -14,7 +14,7 @@
   "dependencies": {
     "d3-color": "^3.0.1",
     "lit": "^2.0.2",
-    "manatea": "^0.5.0"
+    "manatea": "^0.5.1-beta.3"
   },
   "devDependencies": {
     "@parcel/transformer-typescript-tsc": "2.0.0",
