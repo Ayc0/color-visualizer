@@ -1,13 +1,3 @@
-import { applyPolyfill } from "custom-elements-hmr-polyfill";
-
-// @ts-expect-error
-if (module.hot) {
-  applyPolyfill();
-
-  // @ts-expect-error
-  module.hot.accept();
-}
-
 import "./LCHPaint/LCHPaint";
 import "./ColorPicker/ColorPicker";
 import { colorController } from "./color-controller";
