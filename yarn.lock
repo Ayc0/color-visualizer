@@ -2017,6 +2017,7 @@ __metadata:
   dependencies:
     "@parcel/transformer-typescript-tsc": 2.0.0
     "@types/d3-color": ^3.0.2
+    custom-elements-hmr-polyfill: ^1.0.3
     d3-color: ^3.0.1
     lit: ^2.0.2
     manatea: ^0.5.1-beta.3
@@ -2508,6 +2509,13 @@ __metadata:
   dependencies:
     cssom: 0.3.x
   checksum: 7efb9731d68dd042f32e0e3bbc7c1096653ba521f21ab1c5b158862321e4fcbfb51070641b834fadc8dd070a634dd43f328177e00d1b8481b5143a3e09f3d3f6
+  languageName: node
+  linkType: hard
+
+"custom-elements-hmr-polyfill@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "custom-elements-hmr-polyfill@npm:1.0.3"
+  checksum: f579d496cf768d1346c65cb614738508b18f79b6b8c183512c8cf510e818ff7c46475c5fcf9e948acfc360f0f39ec26bea626df80e408c37dcefb332eb3c76b1
   languageName: node
   linkType: hard
 

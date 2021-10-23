@@ -19,9 +19,10 @@ const thumbStyles = css`
   cursor: pointer;
 `;
 
-const trackBackground = css`var(--track-background, #9e9e9e)`;
-const trackBackgroundHover = css`var(--track-background-hover, #bbbbbb)`;
-const trackBackgroundFocus = css`var(--track-background-focus, #cbcbcb)`;
+// Use both the previous and the current to avoid flickers on FF / Safari
+const trackBackground = css`var(--track-background, #9e9e9e), var(--previous-track-background, #9e9e9e)`;
+// const trackBackgroundHover = css`var(--track-background-hover, #bbbbbb)`;
+// const trackBackgroundFocus = css`var(--track-background-focus, #cbcbcb)`;
 const trackStyles = css`
   background: ${trackBackground};
   background-size: 100% 100%;
@@ -109,7 +110,8 @@ export class ColorSlider extends LitElement {
       .max=${this.max}
       .step=${this.step}
       .value=${this.value}
-      style="--track-background: url(${this.getBackgroundRange()})"
+      style="--previous-track-background: url(${this
+        .prevBackgroundRange}); --track-background: url(${this.getBackgroundRange()})"
       type="range"
       @input=${(event: Event) => {
         const element = event.target as HTMLInputElement;

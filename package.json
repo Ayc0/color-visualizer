@@ -5,13 +5,15 @@
   "files": [
     "dist"
   ],
+  "source": "./index.html",
   "scripts": {
     "start": "yarn start:dev",
-    "start:dev": "parcel serve ./index.html",
-    "build": "parcel build ./index.html --public-url /color-visualizer/",
+    "start:dev": "parcel serve",
+    "build": "parcel build --public-url /color-visualizer/",
     "start:prod": "serve -s ./dist"
   },
   "dependencies": {
+    "custom-elements-hmr-polyfill": "^1.0.3",
     "d3-color": "^3.0.1",
     "lit": "^2.0.2",
     "manatea": "^0.5.1-beta.3"
