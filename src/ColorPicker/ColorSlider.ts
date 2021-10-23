@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { ColorSpaceObject, rgb } from "d3-color";
+import { Kind, Type } from "../color-controller";
 
 const height = 20;
 const offset = 1;
@@ -48,7 +49,7 @@ export class ColorSlider extends LitElement {
   @state()
   referenceColor: ColorSpaceObject = rgb(0, 0, 0);
   @state()
-  valueToModify: string = "h";
+  valueToModify: Kind[Type] = "h";
 
   prevColor?: string;
   prevBackgroundRange?: string;
@@ -80,7 +81,7 @@ export class ColorSlider extends LitElement {
     const colorArray = new Uint8ClampedArray(nbOfPoints * 4);
     for (let i = 0; i <= nbOfPoints; i++) {
       // @ts-ignore
-      color[this.valueToModify] = i * this.step;
+      color[this.valueToModify] = i * this.step + this.min;
       const rgb = color.rgb();
       const position = 4 * i;
       colorArray[position + 0] = rgb.r; // R value

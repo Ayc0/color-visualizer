@@ -77,7 +77,7 @@ export class ColorPicker extends LitElement {
         .step=${step}
         .value=${value}
         .referenceColor=${stored[category].raw}
-        .valueToModify=${label[0]}
+        .valueToModify=${kind}
         @input=${(event: Event) => {
           const element = event.target as ColorSlider;
           const newValue = clamp(element.value || 0);
@@ -188,7 +188,7 @@ export class ColorPicker extends LitElement {
             )})</code></pre>
           </div>
         </details>
-
+        <!--  -->
         <details ?open=${!this.isMobile}>
           <summary><h2>RGB</h2></summary>
           <div class="group">
