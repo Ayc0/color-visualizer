@@ -1,4 +1,4 @@
-function t(t,e,i,r){Object.defineProperty(t,e,{get:i,set:r,enumerable:!0,configurable:!0})}var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:"undefined"!=typeof window?window:"undefined"!=typeof global?global:{},i={},r={},n=e.parcelRequiree5a9;null==n&&((n=function(t){if(t in i)return i[t].exports;if(t in r){var e=r[t];delete r[t];var n={id:t,exports:{}};return i[t]=n,e.call(n.exports,n,n.exports),n.exports}var s=new Error("Cannot find module '"+t+"'");throw s.code="MODULE_NOT_FOUND",s}).register=function(t,e){r[t]=e},e.parcelRequiree5a9=n),n.register("bXuNP",(function(e,i){var r,n;t(e.exports,"register",(()=>r),(t=>r=t)),t(e.exports,"resolve",(()=>n),(t=>n=t));var s={};r=function(t){for(var e=Object.keys(t),i=0;i<e.length;i++)s[e[i]]=t[e[i]]},n=function(t){var e=s[t];if(null==e)throw new Error("Could not resolve bundle with id "+t);return e}})),n("bXuNP").register(JSON.parse('{"d3X8m":"index.a600d6d7.js","WugCC":"generate-colors.worker.b6689dd7.js"}'));
+function t(t,e,i,r){Object.defineProperty(t,e,{get:i,set:r,enumerable:!0,configurable:!0})}var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:"undefined"!=typeof window?window:"undefined"!=typeof global?global:{},i={},r={},n=e.parcelRequiree5a9;null==n&&((n=function(t){if(t in i)return i[t].exports;if(t in r){var e=r[t];delete r[t];var n={id:t,exports:{}};return i[t]=n,e.call(n.exports,n,n.exports),n.exports}var s=new Error("Cannot find module '"+t+"'");throw s.code="MODULE_NOT_FOUND",s}).register=function(t,e){r[t]=e},e.parcelRequiree5a9=n),n.register("bXuNP",(function(e,i){var r,n;t(e.exports,"register",(()=>r),(t=>r=t)),t(e.exports,"resolve",(()=>n),(t=>n=t));var s={};r=function(t){for(var e=Object.keys(t),i=0;i<e.length;i++)s[e[i]]=t[e[i]]},n=function(t){var e=s[t];if(null==e)throw new Error("Could not resolve bundle with id "+t);return e}})),n("bXuNP").register(JSON.parse('{"d3X8m":"index.5f41a35b.js","WugCC":"generate-colors.worker.b6689dd7.js"}'));
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -69,7 +69,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
         ></canvas>
         <div class="marker"></div>
       </div>
-    `}};var ge;pe.styles=h`
+    `}};pe.styles=h`
     :host canvas {
       border-radius: 5px;
       border: 1px solid grey;
@@ -93,7 +93,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
       border: 1px solid var(--contrast);
       z-index: 1;
     }
-  `,de([nt({type:Number})],pe.prototype,"width",void 0),de([nt({type:Number})],pe.prototype,"height",void 0),de([at("canvas")],pe.prototype,"canvas",void 0),de([at(".marker")],pe.prototype,"marker",void 0),de([(ge={passive:!0},ot({finisher:(t,e)=>{Object.assign(t.prototype[e],ge)}}))],pe.prototype,"onPositionChange",null),pe=de([it("lch-paint")],pe);var fe=function(t,e,i,r){var n,s=arguments.length,o=s<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,r);else for(var a=t.length-1;a>=0;a--)(n=t[a])&&(o=(s<3?n(o):s>3?n(e,i,o):n(e,i))||o);return s>3&&o&&Object.defineProperty(e,i,o),o};const ve=h`
+  `,de([nt({type:Number})],pe.prototype,"width",void 0),de([nt({type:Number})],pe.prototype,"height",void 0),de([at("canvas")],pe.prototype,"canvas",void 0),de([at(".marker")],pe.prototype,"marker",void 0),de([function(t){return ot({finisher:(e,i)=>{Object.assign(e.prototype[i],t)}})}({passive:!0})],pe.prototype,"onPositionChange",null),pe=de([it("lch-paint")],pe);var ge=function(t,e,i,r){var n,s=arguments.length,o=s<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,r);else for(var a=t.length-1;a>=0;a--)(n=t[a])&&(o=(s<3?n(o):s>3?n(e,i,o):n(e,i))||o);return s>3&&o&&Object.defineProperty(e,i,o),o};const fe=h`
   width: ${14}px;
   height: ${22}px;
   background: #00000000;
@@ -101,7 +101,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
     inset 0 0 0 ${1}px var(--white);
   border-radius: 3px;
   cursor: pointer;
-`,me=h`
+`,ve=h`
   background: ${h`var(--track-background, #9e9e9e), var(--previous-track-background, #9e9e9e)`};
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -110,7 +110,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
   width: 100%;
   height: ${20}px;
   cursor: pointer;
-`;let be=class extends tt{constructor(){super(...arguments),this.min=0,this.max=100,this.step=1,this.referenceColor=St(0,0,0),this.valueToModify="h",this.getBackgroundRange=()=>{clearTimeout(this.throttleId);const t=this.referenceColor.copy(),e={...t};delete e[this.valueToModify];const i=JSON.stringify(e);if(this.prevBackgroundRange){if(this.prevColor===i)return this.prevBackgroundRange;const t=performance.now();if(null!=this.timePrevOp&&t-this.timePrevOp<100)return this.throttleId=window.setTimeout((()=>this.requestUpdate()),100),this.prevBackgroundRange}const r=Math.round((this.max-this.min)/this.step),n=new Uint8ClampedArray(4*r);for(let e=0;e<=r;e++){t[this.valueToModify]=e*this.step+this.min;const i=t.rgb(),r=4*e;n[r+0]=i.r,n[r+1]=i.g,n[r+2]=i.b,n[r+3]=255}const s=document.createElement("canvas");s.width=r,s.height=1;const o=new ImageData(n,r,1);s.getContext("2d",{alpha:!1}).putImageData(o,0,0);const a=s.toDataURL();return this.prevBackgroundRange=a,this.prevColor=i,this.timePrevOp=performance.now(),a}}render(){return T`<input
+`;let me=class extends tt{constructor(){super(...arguments),this.min=0,this.max=100,this.step=1,this.referenceColor=St(0,0,0),this.valueToModify="h",this.getBackgroundRange=()=>{clearTimeout(this.throttleId);const t=this.referenceColor.copy(),e={...t};delete e[this.valueToModify];const i=JSON.stringify(e);if(this.prevBackgroundRange){if(this.prevColor===i)return this.prevBackgroundRange;const t=performance.now();if(null!=this.timePrevOp&&t-this.timePrevOp<100)return this.throttleId=window.setTimeout((()=>this.requestUpdate()),100),this.prevBackgroundRange}const r=Math.round((this.max-this.min)/this.step),n=new Uint8ClampedArray(4*r);for(let e=0;e<=r;e++){t[this.valueToModify]=e*this.step+this.min;const i=t.rgb(),r=4*e;n[r+0]=i.r,n[r+1]=i.g,n[r+2]=i.b,n[r+3]=255}const s=document.createElement("canvas");s.width=r,s.height=1;const o=new ImageData(n,r,1);s.getContext("2d",{alpha:!1}).putImageData(o,0,0);const a=s.toDataURL();return this.prevBackgroundRange=a,this.prevColor=i,this.timePrevOp=performance.now(),a}}render(){return T`<input
       .min=${this.min}
       .max=${this.max}
       .step=${this.step}
@@ -118,7 +118,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
       style="--previous-track-background: url(${this.prevBackgroundRange}); --track-background: url(${this.getBackgroundRange()})"
       type="range"
       @input=${t=>{const e=t.target,i=Number(e.value);this.value=Number.isNaN(i)?void 0:i}}
-    />`}};be.styles=h`
+    />`}};me.styles=h`
     :host input[type="range"] {
       width: 100%;
       margin: 0.5px 0;
@@ -127,17 +127,17 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
     }
 
     :host input[type="range"]::-webkit-slider-runnable-track {
-      ${me}
+      ${ve}
     }
     :host input[type="range"]::-moz-range-track {
-      ${me}
+      ${ve}
     }
 
     :host input[type="range"]::-moz-range-thumb {
-      ${ve}
+      ${fe}
     }
     :host input[type="range"]::-webkit-slider-thumb {
-      ${ve}
+      ${fe}
       margin-top: -${1}px;
       -webkit-appearance: none;
     }
@@ -160,7 +160,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
       outline: -webkit-focus-ring-color auto 1px;
       outline-offset: 1px;
     }
-  `,fe([nt({type:Number,reflect:!0})],be.prototype,"min",void 0),fe([nt({type:Number,reflect:!0})],be.prototype,"max",void 0),fe([nt({type:Number,reflect:!0})],be.prototype,"step",void 0),fe([nt({type:Number,reflect:!0})],be.prototype,"value",void 0),fe([st()],be.prototype,"referenceColor",void 0),fe([st()],be.prototype,"valueToModify",void 0),be=fe([it("color-slider")],be);class ye{constructor(t,e){this.host=t,t.addController(this),this.cup=e,this.listener=e.on((()=>this.host.requestUpdate()))}hostDisconnected(){this.listener()}}var $e=function(t,e,i,r){var n,s=arguments.length,o=s<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,r);else for(var a=t.length-1;a>=0;a--)(n=t[a])&&(o=(s<3?n(o):s>3?n(e,i,o):n(e,i))||o);return s>3&&o&&Object.defineProperty(e,i,o),o};function we(t){return Math.floor(t).toString(16).padStart(2,"0")}function _e(t,e=2){const i=10**e;return Math.round(t*i)/i}const ke=window.matchMedia("(max-width: 595px)");let xe=class extends tt{constructor(){super(),this.lchController=new ye(this,Qt),this.isMobile=ke.matches,this.viewListener=t=>{this.isMobile=t.matches},ke.addListener(this.viewListener)}disconnectedCallback(){ke.removeListener(this.viewListener)}renderInput({category:t,kind:e,label:i,shortName:r=e.toUpperCase(),min:n,max:s,step:o=1,mod:a=(t=>t),unit:l=""}){const h=Qt(),c=h[t].values[e],u=`${t}--${e}`;return T`
+  `,ge([nt({type:Number,reflect:!0})],me.prototype,"min",void 0),ge([nt({type:Number,reflect:!0})],me.prototype,"max",void 0),ge([nt({type:Number,reflect:!0})],me.prototype,"step",void 0),ge([nt({type:Number,reflect:!0})],me.prototype,"value",void 0),ge([st()],me.prototype,"referenceColor",void 0),ge([st()],me.prototype,"valueToModify",void 0),me=ge([it("color-slider")],me);class be{constructor(t,e){this.host=t,t.addController(this),this.cup=e,this.listener=e.on((()=>this.host.requestUpdate()))}hostDisconnected(){this.listener()}}var ye=function(t,e,i,r){var n,s=arguments.length,o=s<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)o=Reflect.decorate(t,e,i,r);else for(var a=t.length-1;a>=0;a--)(n=t[a])&&(o=(s<3?n(o):s>3?n(e,i,o):n(e,i))||o);return s>3&&o&&Object.defineProperty(e,i,o),o};function $e(t){return Math.floor(t).toString(16).padStart(2,"0")}function we(t,e=2){const i=10**e;return Math.round(t*i)/i}const _e=window.matchMedia("(max-width: 595px)");let ke=class extends tt{constructor(){super(),this.lchController=new be(this,Qt),this.isMobile=_e.matches,this.viewListener=t=>{this.isMobile=t.matches},_e.addListener(this.viewListener)}disconnectedCallback(){_e.removeListener(this.viewListener)}renderInput({category:t,kind:e,label:i,shortName:r=e.toUpperCase(),min:n,max:s,step:o=1,mod:a=(t=>t),unit:l=""}){const h=Qt(),c=h[t].values[e],u=`${t}--${e}`;return T`
       <label for="slider-${u}">${r} (${i})</label>
       <color-slider
         .id="slider-${u}"
@@ -173,9 +173,9 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
         @input=${i=>{const r=i.target,o=(a=r.value||0,Math.min(s,Math.max(n,a)));var a;r.value=o,Qt([{type:t,kind:e,value:o}])}}
       ></color-slider>
       <span
-        >${_e(a(c),Math.floor(-Math.log(o)/Math.log(10)))}${l}</span
+        >${we(a(c),Math.floor(-Math.log(o)/Math.log(10)))}${l}</span
       >
-    `}willUpdate(t){const e=new Set(t.keys());e.delete("luminance"),e.delete("chroma"),e.delete("hue"),e.size}render(){const t=Qt(),e=`#${we(t.rgb.values.r)}${we(t.rgb.values.g)}${we(t.rgb.values.b)}`;return T`
+    `}willUpdate(t){const e=new Set(t.keys());e.delete("luminance"),e.delete("chroma"),e.delete("hue"),e.size}render(){const t=Qt(),e=`#${$e(t.rgb.values.r)}${$e(t.rgb.values.g)}${$e(t.rgb.values.b)}`;return T`
       <div class="wrapper">
         <details open>
           <summary><h2>LCH</h2></summary>
@@ -184,7 +184,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
             ${this.renderInput({category:"lch",kind:"c",label:"chroma",min:0,max:132})}
             ${this.renderInput({category:"lch",kind:"h",label:"hue",min:0,max:360})}
 
-            <pre class="code-wrapper"><code class="code">LCH(${_e(t.lch.values.l)}% ${_e(t.lch.values.c)} ${_e(t.lch.values.h)})</code></pre>
+            <pre class="code-wrapper"><code class="code">LCH(${we(t.lch.values.l)}% ${we(t.lch.values.c)} ${we(t.lch.values.h)})</code></pre>
           </div>
         </details>
 
@@ -195,7 +195,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
             ${this.renderInput({category:"lab",kind:"a",label:"a",shortName:"a",min:-128,max:127})}
             ${this.renderInput({category:"lab",kind:"b",label:"b",shortName:"b",min:-128,max:127})}
 
-            <pre class="code-wrapper"><code class='code'>Lab(${_e(t.lab.values.l)}% ${_e(t.lab.values.a)} ${_e(t.lab.values.b)})</code></pre>
+            <pre class="code-wrapper"><code class='code'>Lab(${we(t.lab.values.l)}% ${we(t.lab.values.a)} ${we(t.lab.values.b)})</code></pre>
           </div>
         </details>
         <!--  -->
@@ -206,7 +206,7 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
             ${this.renderInput({category:"rgb",kind:"g",label:"green",min:0,max:255})}
             ${this.renderInput({category:"rgb",kind:"b",label:"blue",min:0,max:255})}
 
-            <pre class="code-wrapper"><code class='code'>rgb(${_e(t.rgb.values.r)} ${_e(t.rgb.values.g)} ${_e(t.rgb.values.b)})</code>
+            <pre class="code-wrapper"><code class='code'>rgb(${we(t.rgb.values.r)} ${we(t.rgb.values.g)} ${we(t.rgb.values.b)})</code>
 <code class='code'>${e}</code></pre>
           </div>
         </details>
@@ -218,11 +218,11 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
             ${this.renderInput({category:"hsl",kind:"s",label:"saturation",min:0,step:.01,max:1,mod:t=>100*t,unit:"%"})}
             ${this.renderInput({category:"hsl",kind:"l",label:"lightness",min:0,step:.01,max:1,mod:t=>100*t,unit:"%"})}
 
-            <pre class="code-wrapper"><code class='code'>hsl(${_e(t.hsl.values.h)} ${100*_e(t.hsl.values.s)}% ${_e(100*t.hsl.values.l)}%)</code></pre>
+            <pre class="code-wrapper"><code class='code'>hsl(${we(t.hsl.values.h)} ${100*we(t.hsl.values.s)}% ${we(100*t.hsl.values.l)}%)</code></pre>
           </div>
         </details>
       </div>
-    `}};xe.styles=h`
+    `}};ke.styles=h`
     :host label {
       display: block;
     }
@@ -270,5 +270,5 @@ function at(t,e){return ot({descriptor:i=>{const r={get(){var e,i;return null!==
     :host .code {
       font-family: "Fira Code", monospace;
     }
-  `,$e([st()],xe.prototype,"isMobile",void 0),xe=$e([it("color-picker")],xe),document.documentElement.style.backgroundColor=Qt().rgb.raw.formatHex(),Qt.on((({rgb:t})=>{document.documentElement.style.backgroundColor=t.raw.formatHex()}));
-//# sourceMappingURL=index.a600d6d7.js.map
+  `,ye([st()],ke.prototype,"isMobile",void 0),ke=ye([it("color-picker")],ke),document.documentElement.style.backgroundColor=Qt().rgb.raw.formatHex(),Qt.on((({rgb:t})=>{document.documentElement.style.backgroundColor=t.raw.formatHex()}));
+//# sourceMappingURL=index.5f41a35b.js.map
